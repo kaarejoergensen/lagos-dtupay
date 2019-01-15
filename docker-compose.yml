@@ -3,7 +3,7 @@ services:
   dtupayapi:
     container_name: dtupay-api
     image: lagos/dtupay-api
-    port:
+    ports:
       - "8080:8080"
     networks:
       - "dtupay-network"
@@ -22,5 +22,5 @@ services:
     networks:
       - "dtupay-network"
 
-network:
-  dtupay-network
+networks:
+  dtupay-network:
