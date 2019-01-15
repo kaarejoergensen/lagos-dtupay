@@ -63,14 +63,6 @@
           </buildArgs>
           <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
         </configuration>
-        <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
