@@ -16,8 +16,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
     ports:
       - "27017:27017"
-    #volumes:
-    #  - "./mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+    volumes:
+      - "./mongo-entrypoint/:/docker-entrypoint-initdb.d/"
     command: mongod
     networks:
       - "dtupay-network"
