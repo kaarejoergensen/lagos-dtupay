@@ -1,13 +1,16 @@
 
 package models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,10 +44,12 @@ import java.util.List;
     "user"
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Account {
     protected BigDecimal balance;
     protected String id;
     @XmlElement(nillable = true)
-    protected List<Transaction> transactions;
+    protected List<Transaction> transactions = new ArrayList<>();
     protected User user;
 }
