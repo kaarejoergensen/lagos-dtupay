@@ -1,0 +1,26 @@
+version: '3'
+services:
+  dtupayapi:
+    container_name: dtupay-api
+    image: lagos/dtupay-api
+    port:
+      - "8080:8080"
+    networks:
+      - "dtupay-network"
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
+    ports:
+      - "27017:27017"
+    #volumes:
+    #  - "./mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+    command: mongod
+    networks:
+      - "dtupay-network"
+
+network:
+  dtupay-network
