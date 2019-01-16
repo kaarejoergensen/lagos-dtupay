@@ -8,9 +8,9 @@
     <artifactId>dtupay</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <module>dtupay-engine</module>
         <module>dtupay-barcode</module>
         <module>dtupay-api</module>
-        <module>dtupay-engine</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -26,5 +26,6 @@
             <url>http://projectlombok.org/mavenrepo</url>
         </repository>
     </repositories>
+
 
 </project>

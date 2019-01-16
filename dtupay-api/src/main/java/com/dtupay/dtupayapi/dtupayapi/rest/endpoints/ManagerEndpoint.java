@@ -5,13 +5,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 
+
 @Path("/v1/manager")
 public class ManagerEndpoint {
 
-	private DTUPayEngine engine;
+
 
 	public ManagerEndpoint(){
-		engine = new DTUPayEngine();
+
 	}
 
 
