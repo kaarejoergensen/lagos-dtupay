@@ -1,7 +1,9 @@
 
 package models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.management.relation.Role;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,6 +39,8 @@ import javax.xml.bind.annotation.XmlType;
     "role"
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     protected String cprNumber;
     protected String username;

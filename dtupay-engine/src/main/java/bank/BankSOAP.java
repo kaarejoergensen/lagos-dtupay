@@ -23,6 +23,7 @@ public class BankSOAP implements Bank {
         try {
             return Optional.of(bankService.createAccountWithBalance(user, balance));
         } catch (BankServiceException_Exception e) {
+            System.err.println(e.getMessage());
             return Optional.empty();
         }
     }
@@ -32,6 +33,7 @@ public class BankSOAP implements Bank {
         try {
             return Optional.of(bankService.getAccount(id));
         } catch (BankServiceException_Exception e) {
+            System.err.println(e.getMessage());
             return Optional.empty();
         }
     }
@@ -41,6 +43,7 @@ public class BankSOAP implements Bank {
         try {
             return Optional.of(bankService.getAccountByCprNumber(cprNumber));
         } catch (BankServiceException_Exception e) {
+            System.err.println(e.getMessage());
             return Optional.empty();
         }
     }
@@ -57,16 +60,18 @@ public class BankSOAP implements Bank {
             bankService.retireAccount(id);
             return true;
         } catch (BankServiceException_Exception e) {
+            System.err.println(e.getMessage());
             return false;
         }
     }
 
     @Override
-    public boolean transferMoneyFromTo(String arg0, String arg1, BigDecimal arg2, String arg3) {
+    public boolean transferMoneyFromTo(String fromAccountId, String toAccountId, BigDecimal amount, String description) {
         try {
-            bankService.transferMoneyFromTo(arg0, arg1, arg2, arg3);
+            bankService.transferMoneyFromTo(fromAccountId, toAccountId, amount, description);
             return true;
         } catch (BankServiceException_Exception e) {
+            System.err.println(e.getMessage());
             return false;
         }
     }

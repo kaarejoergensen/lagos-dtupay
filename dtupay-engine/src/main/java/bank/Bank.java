@@ -19,5 +19,5 @@ public interface Bank {
 
     boolean retireAccount(String id);
 
-    boolean transferMoneyFromTo(String arg0, String arg1, BigDecimal arg2, String arg3);
+    boolean transferMoneyFromTo(String fromAccountId, String toAccountId, BigDecimal amount, String description);
 }
