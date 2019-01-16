@@ -31,6 +31,7 @@ public class Database{
             System.out.println("Succesfully connected to database 'dtupay'");
 
             clearUsers();
+            clearTokens();
     }
 
     public void createUser() {
@@ -38,21 +39,6 @@ public class Database{
     }
 
 
-    public String getUser() {
-
-        MongoCollection collection = mdb.getCollection("Account");
-
-        Document doc = new Document("name", "MongoDB")
-                .append("type", "database")
-                .append("count", 1)
-                .append("versions", Arrays.asList("v3.2", "v3.0", "v2.6"))
-                .append("info", new Document("x", 203).append("y", 102));
-
-        collection.insertOne(doc);
-
-        System.out.println(collection.find().first().toString());
-        return collection.toString();
-    }
 
     public void addToken(String userId, String webtoken){
         MongoCollection tokenCollection = mdb.getCollection("Tokens");
@@ -88,8 +74,7 @@ public class Database{
 
         Document doc = new Document();
         doc.append("cprNumber", user.getCprNumber());
-        doc.append("firstname", user.getFirstName());
-        doc.append("lastname", user.getLastName());
+        doc.append("username", user.getUsername());
         doc.append("role", user.getRole().getIdentificationNumber());
 
         users.insertOne(doc);
@@ -99,8 +84,7 @@ public class Database{
         MongoCollection collection = mdb.getCollection("Users");
         Document doc = (Document)collection.find(eq("cprNumber", cprNumber)).first();
         User u = new User();
-        u.setFirstName(doc.get("firstname").toString());
-        u.setLastName(doc.get("lastname").toString());
+        u.setUsername(doc.get("username").toString());
         u.setCprNumber(doc.get("cprNumber").toString());
         u.setRole(Roles.getRole(Integer.parseInt(doc.get("role").toString())));
         return u;
@@ -110,6 +94,11 @@ public class Database{
     public void clearUsers(){
         mdb.getCollection("Users").drop();
         System.out.println("All users erased");
+    }
+
+    public void clearTokens(){
+        mdb.getCollection("Tokens").drop();
+        System.out.println("Tokens erased");
     }
 
 

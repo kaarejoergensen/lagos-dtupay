@@ -2,49 +2,53 @@
 
 import models.Roles;
 import models.User;
+import tokens.TokenProvider;
 
-import javax.management.relation.Role;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 public class EngineMain {
 
 
-    public EngineMain(){
+        public EngineMain(){
 
-    }
-
-
+        }
 
 
 
-    public static void main(String args[]){
-        Database db = new Database();
-
-        /*
+       /*
         TODO: Lage ordentlig mongodb testshit
          */
 
+    /*
+    public static void main(String args[]){
+        Database db = new Database();
+
+        TokenProvider tkn = new TokenProvider();
+
+
 
         User test = new User();
-        test.setFirstName("Fredrik");
-        test.setLastName("asd");
+        test.setUsername("Fredrik");
         test.setCprNumber("1234");
         test.setRole(Roles.User);
 
-
-
         db.addUser(test);
 
-        User getched = db.getUser("1234");
-        System.out.println(getched);
 
+        String token = tkn.issueToken(test.getUsername(), test.getCprNumber(),5);
+        db.addToken(test.getUsername(), token);
+
+        System.out.println(token);
+        System.out.println("Token added! (maybe)");
+
+        List<String> tokenz = db.getTokens(test.getUsername());
+        System.out.println(tokenz.size());
+        for(String s : tokenz){
+            System.out.println(s);
+        }
 
     }
-
+    */
 
 }

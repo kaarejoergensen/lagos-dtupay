@@ -33,14 +33,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "user", propOrder = {
     "cprNumber",
-    "firstName",
-    "lastName",
+    "username",
     "role"
 })
 @Data
 public class User {
     protected String cprNumber;
-    protected String firstName;
-    protected String lastName;
+    protected String username;
     protected Roles role;
 }
