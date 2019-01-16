@@ -1,23 +1,14 @@
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
-
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-
-import models.Roles;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import models.User;
 import org.bson.Document;
 
-
-import java.util.Arrays;
-
-
-import com.mongodb.client.MongoCursor;
-import static com.mongodb.client.model.Filters.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import static com.mongodb.client.model.Filters.eq;
 
 
 public class Database{
@@ -74,8 +65,8 @@ public class Database{
 
         Document doc = new Document();
         doc.append("cprNumber", user.getCprNumber());
-        doc.append("username", user.getUsername());
-        doc.append("role", user.getRole().getIdentificationNumber());
+        //doc.append("username", user.getUsername());
+        //doc.append("role", user.getRole().getIdentificationNumber());
 
         users.insertOne(doc);
     }
@@ -84,9 +75,9 @@ public class Database{
         MongoCollection collection = mdb.getCollection("Users");
         Document doc = (Document)collection.find(eq("cprNumber", cprNumber)).first();
         User u = new User();
-        u.setUsername(doc.get("username").toString());
-        u.setCprNumber(doc.get("cprNumber").toString());
-        u.setRole(Roles.getRole(Integer.parseInt(doc.get("role").toString())));
+        //u.setUsername(doc.get("username").toString());
+        //u.setCprNumber(doc.get("cprNumber").toString());
+        //u.setRole(Roles.getRole(Integer.parseInt(doc.get("role").toString())));
         return u;
     }
 

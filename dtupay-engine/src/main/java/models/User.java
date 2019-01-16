@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -35,14 +34,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "user", propOrder = {
     "cprNumber",
-    "username",
-    "role"
+    "firstName",
+    "lastName",
 })
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
     protected String cprNumber;
-    protected String username;
-    protected Roles role;
+    protected String firstName;
+    protected String lastName;
 }
