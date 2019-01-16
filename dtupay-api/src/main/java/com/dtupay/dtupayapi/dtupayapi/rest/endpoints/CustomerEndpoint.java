@@ -5,7 +5,6 @@ import barcode.BarcodeProvider;
 import com.dtupay.dtupayapi.dtupayapi.rest.models.TokenBarcodePathPair;
 import com.dtupay.dtupayapi.dtupayapi.rest.utils.QRMapper;
 import exceptions.QRException;
-import io.jsonwebtoken.io.IOException;
 import models.TokenBarcodePair;
 
 import javax.ws.rs.GET;
@@ -14,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class CustomerEndpoint {
 	public Response requestTokens(@PathParam("name") String username,
                           @PathParam("uid") String userId,
                           @PathParam("numberOfRemainingTokens") int number) {
-        try {
+		try {
             Set<TokenBarcodePair> tokens = this.barcodeProvider.getTokens(username, userId, number);
             Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
             for (TokenBarcodePair token : tokens) {
@@ -40,7 +40,7 @@ public class CustomerEndpoint {
         }catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        return Response.ok("customer").build();
+		return Response.ok("customer").build();
 	}
 
 
@@ -66,13 +66,9 @@ public class CustomerEndpoint {
         File temp = new File(String.valueOf(filePath));
 
         if(temp.exists()){
-            try {
-                return Response.status(Response.Status.OK).header("content-disposition",
-                        "attachment; filename=\"" + fileName + "\"").build();
-            } catch (IOException e) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-            }
-        } else {
+			return Response.status(Response.Status.OK).header("content-disposition",
+					"attachment; filename=\"" + fileName + "\"").build();
+		} else {
             return Response.status(Response.Status.BAD_REQUEST).entity("File not found").build();
         }
     }
