@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Create docker image') {
             steps {
-                sh 'mvn -f dtupay-api/ dockerfile:build'
+                sh 'mvn -f dtupay-customer-rest-api/ dockerfile:build'
             }
         }
     }
