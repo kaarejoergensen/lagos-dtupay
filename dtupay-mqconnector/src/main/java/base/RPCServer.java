@@ -7,6 +7,7 @@ import com.rabbitmq.client.*;
 import utils.JSONMapper;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
@@ -16,11 +17,26 @@ public abstract class RPCServer {
     public RPCServer() {
     }
 
-    public void run() throws IOException, TimeoutException {
+    public void run(String host) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        System.out.println(" [x] Connecting to host " + (host != null ? host : "localhost") );
+        factory.setHost(host != null ? host : "localhost");
         factory.setUsername("rabbitmq");
         factory.setPassword("rabbitmq");
+        while (true) {
+            try {
+                Connection connection = factory.newConnection();
+                connection.close();
+                break;
+            } catch (ConnectException e) {
+                System.out.println("Connection refused, waiting 5 seconds");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
 
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {

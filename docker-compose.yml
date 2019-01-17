@@ -1,12 +1,48 @@
 version: '3'
 services:
-  dtupayapi:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - "dtupay-network"
+
+  dtupay-customer-rest-api:
     container_name: dtupay-customer-rest-api
     image: lagos/dtupay-customer-rest-api
     ports:
       - "8080:8080"
     networks:
       - "dtupay-network"
+    depends_on:
+      - rabbitmq
+
+  dtupay-bank:
+    container_name: dtupay-bank
+    image: lagos/dtupay-bank
+    environment:
+      - BROKER_NAME=rabbitmq
+    networks:
+      - "dtupay-network"
+    depends_on:
+      - rabbitmq
+
+  dtupay-token:
+    container_name: dtupay-token
+    image: lagos/dtupay-token
+    environment:
+      - BROKER_NAME=rabbitmq
+    networks:
+      - "dtupay-network"
+    depends_on:
+      - rabbitmq
+      - mongo
 
   mongo:
     container_name: mongo
@@ -21,20 +57,6 @@ services:
     command: mongod
     networks:
       - "dtupay-network"
-
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq
-    hostname: "rabbit1"
-    environment:
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    networks:
-      - "dtupay-network"
-
 
 networks:
   dtupay-network:

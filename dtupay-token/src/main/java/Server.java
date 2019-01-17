@@ -11,7 +11,7 @@ public class Server extends RPCServer {
     public static void main(String[] args) throws IOException, TimeoutException {
         final TokenProvider tokenProvider = new TokenProvider(new MemoryDataStore());
         RPCServer rpcServer = new Server(tokenProvider);
-        rpcServer.run();
+        rpcServer.run(args[0]);
     }
 
     private Server(TokenProvider tokenProvider) {

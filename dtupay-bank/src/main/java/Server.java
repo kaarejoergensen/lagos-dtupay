@@ -11,7 +11,7 @@ public class Server extends RPCServer {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         RPCServer rpcServer = new Server();
-        rpcServer.run();
+        rpcServer.run(args[0]);
     }
 
     @Override
