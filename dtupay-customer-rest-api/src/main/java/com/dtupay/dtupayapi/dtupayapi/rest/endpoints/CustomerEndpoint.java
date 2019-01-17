@@ -3,18 +3,18 @@ package com.dtupay.dtupayapi.dtupayapi.rest.endpoints;
 
 import barcode.BarcodeProvider;
 import com.dtupay.dtupayapi.dtupayapi.rest.models.TokenBarcodePathPair;
-import com.dtupay.dtupayapi.dtupayapi.rest.utils.QRMapper;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import exceptions.QRException;
 import models.TokenBarcodePair;
+import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +23,23 @@ import java.util.Set;
 public class CustomerEndpoint {
 
 	private BarcodeProvider barcodeProvider = new BarcodeProvider();
+
+    private final String IMAGE_DIR = "/images/";
+    private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
+        String directory = System.getProperty("user.dir") + IMAGE_DIR;
+
+        java.nio.file.Path directoryPath = FileSystems.getDefault().getPath(directory);
+        if (Files.notExists(directoryPath)) Files.createDirectory(directoryPath);
+        java.nio.file.Path path;
+        String randomString;
+        do {
+            randomString = RandomStringUtils.randomAlphabetic(10);
+            path = FileSystems.getDefault().getPath(directory + randomString + ".png");
+        } while (Files.exists(path));
+
+        MatrixToImageWriter.writeToPath(qrMatrix, "PNG", path);
+        return "/v1/tokens/barcode/" + randomString + ".png";
+    }
 
 	@GET
     @Path("/{name}/{uid}/{numberOfRemainingTokens}")
@@ -33,7 +50,7 @@ public class CustomerEndpoint {
             Set<TokenBarcodePair> tokens = this.barcodeProvider.getTokens(username, userId, number);
             Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
             for (TokenBarcodePair token : tokens) {
-                finalTokens.add(new TokenBarcodePathPair(token.getToken(), QRMapper.saveQRToDisk(token.getBarcode())));
+                finalTokens.add(new TokenBarcodePathPair(token.getToken(), saveQRToDisk(token.getBarcode())));
             }
         }catch (QRException | IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -45,7 +62,7 @@ public class CustomerEndpoint {
 
 
     @POST
-    public Response useToken(String token) {
+    public Response useToken(@HeaderParam(value = "Authorization") String token) {
         boolean success;
         try {
             success = this.barcodeProvider.useToken(token);
@@ -61,7 +78,7 @@ public class CustomerEndpoint {
 	@GET
     @Path("/barcode/{fileName}")
     public Response getBarcode(@PathParam("fileName") String fileName) {
-        String path = System.getProperty("user.dir") + QRMapper.IMAGE_DIR + fileName;
+        String path = System.getProperty("user.dir") + IMAGE_DIR + fileName;
         Path filePath = (Path) FileSystems.getDefault().getPath(path);
         File temp = new File(String.valueOf(filePath));
 

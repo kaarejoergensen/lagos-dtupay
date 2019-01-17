@@ -10,7 +10,7 @@
     <modules>
         <module>dtupay-engine</module>
         <module>dtupay-barcode</module>
-        <module>dtupay-api</module>
+        <module>dtupay-customer-rest-api</module>
     </modules>
     <packaging>pom</packaging>
 
