@@ -34,48 +34,14 @@
     </dependencies>
   </dependencyManagement>
 
-  <build>
-    <finalName>${project.artifactId}-${project.version}</finalName>
-    <plugins>
-      <plugin>
-        <groupId>io.thorntail</groupId>
-        <artifactId>thorntail-maven-plugin</artifactId>
-        <version>${version.thorntail}</version>
-        
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>1.4.9</version>
-        <configuration>
-          <repository>${docker.image.prefix}/${project.artifactId}</repository>
-          <tag>${project.version}</tag>
-          <tag>latest</tag>
-          <buildArgs>
-            <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
-          </buildArgs>
-          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
-
     <dependency>
       <groupId>io.thorntail</groupId>
       <artifactId>undertow</artifactId>
     </dependency><dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>jaxrs</artifactId>
-    </dependency>
+    <groupId>io.thorntail</groupId>
+    <artifactId>jaxrs</artifactId>
+  </dependency>
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
@@ -97,6 +63,47 @@
       <version>1.18.4</version>
       <scope>compile</scope>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>io.thorntail</groupId>
+        <artifactId>thorntail-maven-plugin</artifactId>
+        <version>${version.thorntail}</version>
+        
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>1.4.9</version>
+        <executions>
+          <execution>
+            <id>build-image</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <repository>${docker.image.prefix}/${project.artifactId}</repository>
+          <tag>${project.version}</tag>
+          <tag>latest</tag>
+          <buildArgs>
+            <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
+          </buildArgs>
+          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -8,10 +8,10 @@
     <artifactId>dtupay</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <module>dtupay-mqconnector</module>
         <module>dtupay-bank</module>
         <module>dtupay-token</module>
         <module>dtupay-customer-rest-api</module>
-        <module>dtupay-mqconnector</module>
     </modules>
     <packaging>pom</packaging>
 
