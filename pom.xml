@@ -11,6 +11,7 @@
         <module>dtupay-engine</module>
         <module>dtupay-barcode</module>
         <module>dtupay-customer-rest-api</module>
+        <module>dtupay-mqconnector</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -58,7 +59,18 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+    </dependencies>
 
 </project>

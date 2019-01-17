@@ -22,5 +22,19 @@ services:
     networks:
       - "dtupay-network"
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - "dtupay-network"
+
+
 networks:
   dtupay-network:
