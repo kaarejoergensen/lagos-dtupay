@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "user", propOrder = {
     "cprNumber",
     "firstName",
-    "lastName"
+    "lastName",
 })
 @Data
 @AllArgsConstructor
