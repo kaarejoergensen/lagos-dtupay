@@ -1,59 +1,54 @@
 package persistence;
 
-import tokens.TokenProvider;
-
 import java.util.*;
 
 public class MemoryDataStore implements Datastore {
-    private int totalNumberOfTokensIssued;
-    private TokenProvider tokenProvider;
-    private Map<String, Integer> numberOfUnusedTokenMap;
+    private Map<String, Integer> numberOfUnUsedTokensMap;
+
+    private Set<String> unUsedTokens;
     private Set<String> usedTokens;
 
-    public MemoryDataStore(TokenProvider tokenProvider) {
-        this.totalNumberOfTokensIssued = 0;
-        this.tokenProvider = tokenProvider;
-        this.numberOfUnusedTokenMap = new HashMap<>();
+    public MemoryDataStore() {
+        this.numberOfUnUsedTokensMap = new HashMap<>();
+
         this.usedTokens = new HashSet<>();
+        this.unUsedTokens = new HashSet<>();
     }
 
     @Override
-    public void useToken(String tokenString) {
-        String userName = this.tokenProvider.getUserName(tokenString);
-        Integer numberOfUnusedTokens = this.numberOfUnusedTokenMap.get(userName);
-        if (numberOfUnusedTokens == null)
-            throw new IllegalArgumentException("The token does not exist");
-        this.usedTokens.add(tokenString);
-        this.numberOfUnusedTokenMap.put(userName, numberOfUnusedTokens - 1);
-    }
-
-    @Override
-    public boolean isTokenUsed(String tokenString) {
-        return this.usedTokens.contains(tokenString);
-    }
-
-    @Override
-    public void addTokens(int tokens, String userName) {
-        Integer numberOfUnusedTokens = this.numberOfUnusedTokenMap.get(userName);
+    public void addTokens(Set<String> newTokens, String userId) {
+        Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
         if (numberOfUnusedTokens == null)
             numberOfUnusedTokens = 0;
-        numberOfUnusedTokens += tokens;
-        this.numberOfUnusedTokenMap.put(userName, numberOfUnusedTokens);
+        numberOfUnusedTokens += newTokens.size();
+        this.numberOfUnUsedTokensMap.put(userId, numberOfUnusedTokens);
+        this.unUsedTokens.addAll(newTokens);
     }
 
     @Override
-    public int getNumberOfUnusedTokens(String userName) {
-        Integer numberOfUnusedTokens = this.numberOfUnusedTokenMap.get(userName);
-        return numberOfUnusedTokens != null ? numberOfUnusedTokens : 0;
+    public void useToken(String token, String userId) {
+        this.unUsedTokens.remove(token);
+        this.usedTokens.add(token);
+        Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
+        if (numberOfUnusedTokens == null)
+            throw new IllegalArgumentException("Should never happen");
+        numberOfUnusedTokens -= 1;
+        this.numberOfUnUsedTokensMap.put(userId, numberOfUnusedTokens);
     }
 
     @Override
-    public int getTotalNumberOfTokensIssued() {
-        return totalNumberOfTokensIssued;
+    public int getNumberOfUnusedTokens(String userId) {
+        Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
+        return numberOfUnusedTokens == null ? 0 : numberOfUnusedTokens;
     }
 
     @Override
-    public void setTotalNumberOfTokensIssued(int totalNumberOfTokensIssued) {
-        this.totalNumberOfTokensIssued = totalNumberOfTokensIssued;
+    public boolean isTokenUnique(String token) {
+        return !this.usedTokens.contains(token) && !this.unUsedTokens.contains(token);
+    }
+
+    @Override
+    public boolean checkToken(String token) {
+        return this.unUsedTokens.contains(token) && !this.usedTokens.contains(token);
     }
 }

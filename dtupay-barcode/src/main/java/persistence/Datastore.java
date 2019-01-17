@@ -1,15 +1,15 @@
 package persistence;
 
+import java.util.Set;
+
 public interface Datastore {
-    void useToken(String tokenString);
+    void addTokens(Set<String> tokens, String userId);
 
-    boolean isTokenUsed(String tokenString);
+    void useToken(String token, String userId);
 
-    void addTokens(int tokens, String userName);
+    int getNumberOfUnusedTokens(String userId);
 
-    int getNumberOfUnusedTokens(String userName);
+    boolean isTokenUnique(String token);
 
-    int getTotalNumberOfTokensIssued();
-
-    void setTotalNumberOfTokensIssued(int totalNumberOfTokensIssued);
+    boolean checkToken(String token);
 }
