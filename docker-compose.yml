@@ -1,8 +1,8 @@
 version: '3'
 services:
   dtupayapi:
-    container_name: dtupay-api
-    image: lagos/dtupay-api
+    container_name: dtupay-customer-rest-api
+    image: lagos/dtupay-customer-rest-api
     ports:
       - "8080:8080"
     networks:
