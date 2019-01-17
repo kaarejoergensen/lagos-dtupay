@@ -3,8 +3,11 @@ package com.dtupay.dtupayapi.dtupayapi.rest.endpoints;
 
 import barcode.BarcodeProvider;
 import com.dtupay.dtupayapi.dtupayapi.rest.models.TokenBarcodePathPair;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.QRException;
 import models.TokenBarcodePair;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +26,9 @@ import java.util.Set;
 @Path("/v1/customer")
 public class CustomerEndpoint {
 
+    //Cunt
+
+    private final int QR_SIZE = 300;
 	private BarcodeProvider barcodeProvider = new BarcodeProvider();
 
     private final String IMAGE_DIR = "/images/";
@@ -46,18 +53,34 @@ public class CustomerEndpoint {
 	public Response requestTokens(@PathParam("name") String username,
                           @PathParam("uid") String userId,
                           @PathParam("numberOfRemainingTokens") int number) {
+
 		try {
-            Set<TokenBarcodePair> tokens = this.barcodeProvider.getTokens(username, userId, number);
+            ArrayList<String> tokenString = this.barcodeProvider.getTokens(username, userId, number);
+
+            for (String string : tokenString) {
+                QRCodeWriter qrCodeWriter = new QRCodeWriter();
+                try {
+                    Set<TokenBarcodePair> tokens = qrCodeWriter.encode(string, BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
+                    //ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+                    //MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+                    //return pngOutputStream.toByteArray();
+                } catch (WriterException e) {
+                    throw new QRException(e.getMessage(), e);
+                }
+            }
+
             Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
+
             for (TokenBarcodePair token : tokens) {
                 finalTokens.add(new TokenBarcodePathPair(token.getToken(), saveQRToDisk(token.getBarcode())));
             }
+            return Response.ok("customer").build();
         }catch (QRException | IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught exception").build();
         }catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Caught exception").build();
         }
-		return Response.ok("customer").build();
+
 	}
 
 
