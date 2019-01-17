@@ -98,12 +98,5 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.dtu.dtupay</groupId>
-      <artifactId>dtupay-engine</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-
   </dependencies>
 </project>

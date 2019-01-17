@@ -10,7 +10,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dtupay-barcode</artifactId>
+    <artifactId>dtupay-token</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

@@ -3,9 +3,9 @@
   <component name="Encoding" addBOMForNewFiles="with NO BOM">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dtupay-api" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/dtupay-barcode" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dtupay-bank" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dtupay-customer-rest-api" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/dtupay-engine" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dtupay-mqconnector" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dtupay-token" charset="UTF-8" />
   </component>
 </project>
