@@ -12,12 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 public abstract class RPCServer {
-    static final String RPC_QUEUE_NAME = "rpc_queue";
-
     public RPCServer() {
     }
 
-    public void run(String host) throws IOException, TimeoutException {
+    public void run(String host, String queueName) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         System.out.println(" [x] Connecting to host " + (host != null ? host : "localhost") );
         factory.setHost(host != null ? host : "localhost");
@@ -40,8 +38,8 @@ public abstract class RPCServer {
 
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-            channel.queuePurge(RPC_QUEUE_NAME);
+            channel.queueDeclare(queueName, false, false, false, null);
+            channel.queuePurge(queueName);
 
             channel.basicQos(1);
 
@@ -58,6 +56,7 @@ public abstract class RPCServer {
 
                 try {
                     String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+                    System.out.println(" [x] Received message: " + message);
                     response += this.implementation(JSONMapper.JSONToArray(message));
                 } catch (RuntimeException e) {
                     e.printStackTrace();
@@ -71,7 +70,7 @@ public abstract class RPCServer {
                 }
             };
 
-            channel.basicConsume(RPC_QUEUE_NAME, false, deliverCallback, (consumerTag -> { }));
+            channel.basicConsume(queueName, false, deliverCallback, (consumerTag -> { }));
             // Wait and be prepared to consume the message from RPC client.
             while (true) {
                 synchronized (monitor) {

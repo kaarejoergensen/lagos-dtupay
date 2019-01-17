@@ -11,9 +11,11 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 public class TokenClient {
+    private static final String RPC_QUEUE_NAME = "rpc_queue_token";
     private RPCClient rpcClient;
-    public TokenClient() throws IOException, TimeoutException {
-        rpcClient = new RPCClient();
+
+    public TokenClient(String host) throws IOException, TimeoutException {
+        rpcClient = new RPCClient(host, RPC_QUEUE_NAME);
     }
 
     public Set<String> getTokens(String userName, String userId, int numberOfTokens) throws ClientException {

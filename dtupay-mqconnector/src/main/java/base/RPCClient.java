@@ -15,28 +15,20 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 public class RPCClient implements AutoCloseable {
-
     private Connection connection;
     private Channel channel;
+    private String queueName;
 
-    public RPCClient() throws IOException, TimeoutException {
+    public RPCClient(String host, String queueName) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
+        factory.setHost(host != null ? host : "localhost");
         factory.setUsername("rabbitmq");
         factory.setPassword("rabbitmq");
 
         connection = factory.newConnection();
         channel = connection.createChannel();
+        this.queueName = queueName;
     }
-
-    //public static void main(String[] argv) {
-     //   try (base.RPCClient fibonacciRpc = new base.RPCClient()) {
-      //      List<String> arguments = Arrays.asList("core", "1234", "5");
-       //     System.out.println(fibonacciRpc.call(arrayToJSON(arguments)));
-        //} catch (IOException | TimeoutException | InterruptedException e) {
-         //   e.printStackTrace();
-        //}
-    //}
 
     public String call(String... arguments) throws IOException, InterruptedException, ClientException {
         final String corrId = UUID.randomUUID().toString();
@@ -49,7 +41,7 @@ public class RPCClient implements AutoCloseable {
                 .replyTo(replyQueueName)
                 .build();
 
-        channel.basicPublish("", RPCServer.RPC_QUEUE_NAME, props, message.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish("", queueName, props, message.getBytes(StandardCharsets.UTF_8));
 
         final BlockingQueue<String> response = new ArrayBlockingQueue<>(1);
 

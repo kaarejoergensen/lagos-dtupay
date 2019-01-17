@@ -1,15 +1,18 @@
 package com.dtupay.dtupayapi.dtupayapi.rest.endpoints;
 
 
+import clients.TokenClient;
 import com.dtupay.dtupayapi.dtupayapi.rest.models.TokenBarcodePathPair;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import exceptions.ClientException;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +21,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 
 @Path("/v1/customer")
@@ -27,6 +31,20 @@ public class CustomerEndpoint {
 
     private final int QR_SIZE = 300;
 	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
+
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response get(@QueryParam("username") String username,
+                            @QueryParam("userId") String userId,
+                            @QueryParam("numberOfTokens") Integer numberOfTokens) {
+        try {
+            TokenClient tokenClient = new TokenClient("rabbitmq");
+            return Response.ok(tokenClient.getTokens(username, userId, numberOfTokens)).build();
+        } catch (IOException | TimeoutException | ClientException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
 
     private final String IMAGE_DIR = "/images/";
     private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
