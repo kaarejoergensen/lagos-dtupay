@@ -19,7 +19,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <docker.image.prefix>lagos</docker.image.prefix>
   </properties>
 
   <dependencyManagement>
@@ -57,12 +56,6 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.8.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.4</version>
-      <scope>compile</scope>
-    </dependency>
 
     <dependency>
       <groupId>com.dtu.dtupay</groupId>
@@ -93,16 +86,39 @@
         <version>1.4.9</version>
         <executions>
           <execution>
-            <id>build-image</id>
-            <phase>package</phase>
+            <id>tag-version</id>
             <goals>
               <goal>build</goal>
+              <goal>push</goal>
             </goals>
+            <configuration>
+              <tag>${project.version}</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tag-latest</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>latest</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tag-buildnumber</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>${build.number}</tag>
+            </configuration>
           </execution>
         </executions>
         <configuration>
           <repository>${docker.image.prefix}/${project.artifactId}</repository>
-          <tag>${project.version}</tag>
+          <tag>${build.number}</tag>
           <tag>latest</tag>
           <buildArgs>
             <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
