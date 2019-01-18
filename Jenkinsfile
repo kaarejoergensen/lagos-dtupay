@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install -Dmaven.test.skip=true'
+                sh 'mvn clean compile'
             }
         }
         stage('Test') {
@@ -16,9 +16,17 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Create docker image') {
+        stage('Create docker images') {
             steps {
-                sh 'mvn -f dtupay-customer-rest-api/ dockerfile:build'
+                sh "mvn package -Dbuild.number=${env.BUILD_NUMBER}"
+            }
+        }
+        stage('Push docker images') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER}"
             }
         }
     }

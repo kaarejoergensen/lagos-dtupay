@@ -19,7 +19,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <docker.image.prefix>lagos</docker.image.prefix>
   </properties>
 
   <dependencyManagement>
@@ -33,6 +32,37 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.thorntail</groupId>
+      <artifactId>undertow</artifactId>
+    </dependency><dependency>
+    <groupId>io.thorntail</groupId>
+    <artifactId>jaxrs</artifactId>
+  </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.dtu.dtupay</groupId>
+      <artifactId>dtupay-mqconnector</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
@@ -54,9 +84,41 @@
         <groupId>com.spotify</groupId>
         <artifactId>dockerfile-maven-plugin</artifactId>
         <version>1.4.9</version>
+        <executions>
+          <execution>
+            <id>tag-version</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>${project.version}</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tag-latest</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>latest</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tag-buildnumber</id>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>${build.number}</tag>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <repository>${docker.image.prefix}/${project.artifactId}</repository>
-          <tag>${project.version}</tag>
+          <tag>${build.number}</tag>
           <tag>latest</tag>
           <buildArgs>
             <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
@@ -66,44 +128,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>undertow</artifactId>
-    </dependency><dependency>
-      <groupId>io.thorntail</groupId>
-      <artifactId>jaxrs</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>core</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>javase</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.4</version>
-      <scope>compile</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.dtu.dtupay</groupId>
-      <artifactId>dtupay-engine</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-
-
-  </dependencies>
 </project>
