@@ -1,8 +1,8 @@
-package com.dtupay.dtupayapi.dtupayapi.rest.endpoints;
+package com.dtupay.dtupayapi.customer.endpoints;
 
 
 import clients.TokenClient;
-import com.dtupay.dtupayapi.dtupayapi.rest.models.TokenBarcodePathPair;
+import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;

@@ -13,16 +13,6 @@ services:
     networks:
       - "dtupay-network"
 
-  dtupay-customer-rest-api:
-    container_name: dtupay-customer-rest-api
-    image: lagos/dtupay-customer-rest-api
-    ports:
-      - "8080:8080"
-    networks:
-      - "dtupay-network"
-    depends_on:
-      - rabbitmq
-
   dtupay-bank:
     container_name: dtupay-bank
     image: lagos/dtupay-bank
@@ -57,6 +47,39 @@ services:
     command: mongod
     networks:
       - "dtupay-network"
+
+  dtupay-api-customer:
+    container_name: dtupay-api-customer
+    image: lagos/dtupay-api-customer
+    ports:
+      - "8080:8080"
+    networks:
+      - "dtupay-network"
+    depends_on:
+      - dtupay-bank
+      - dtupay-token
+
+  dtupay-api-merchant:
+    container_name: dtupay-api-merchant
+    image: lagos/dtupay-api-merchant
+    ports:
+      - "8081:8080"
+    networks:
+      - "dtupay-network"
+    depends_on:
+      - dtupay-bank
+      - dtupay-token
+
+  dtupay-api-manager:
+    container_name: dtupay-api-manager
+    image: lagos/dtupay-api-manager
+    ports:
+      - "8082:8080"
+    networks:
+      - "dtupay-network"
+    depends_on:
+      - dtupay-bank
+      - dtupay-token
 
 networks:
   dtupay-network:

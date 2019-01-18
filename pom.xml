@@ -11,7 +11,9 @@
         <module>dtupay-mqconnector</module>
         <module>dtupay-bank</module>
         <module>dtupay-token</module>
-        <module>dtupay-customer-rest-api</module>
+        <module>dtupay-api-customer</module>
+        <module>dtupay-api-merchant</module>
+        <module>dtupay-api-manager</module>
     </modules>
     <packaging>pom</packaging>
 
