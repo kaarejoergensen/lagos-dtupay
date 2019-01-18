@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 @CucumberOptions(
         plugin = {"pretty"},
-        features = "user.dir\\..\\src\\test\\java\\resources\\cucumber"
+        features = "user.dir/../src/test/java/resources/cucumber"
 )
 public class RunCucumberTest {
 }
