@@ -18,8 +18,9 @@ pipeline {
         }
         stage('Create docker images') {
             when {
-                not {
-                    branch: 'master'
+                expression {
+                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    return !(GIT_BRANCH == 'origin/master')
                 }
             }
             steps {
@@ -28,7 +29,10 @@ pipeline {
         }
         stage('Create and push docker images') {
             when {
-                branch 'master'
+                expression {
+                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    return GIT_BRANCH == 'origin/master'
+                }
             }
             steps {
                 sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER}"
