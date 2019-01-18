@@ -4,7 +4,6 @@ Feature: Token and Storage test
   Scenario: Issue A token
     Given the user id, user name and the number of tokens
     When issuing tokens
-    And the tokens retreived is not be null
     Then the tokens provided should be "5"
 
 
