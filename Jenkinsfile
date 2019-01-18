@@ -17,11 +17,16 @@ pipeline {
             }
         }
         stage('Create docker images') {
+            when {
+                not {
+                    branch: 'master'
+                }
+            }
             steps {
                 sh "mvn package -Dbuild.number=${env.BUILD_NUMBER}"
             }
         }
-        stage('Push docker images') {
+        stage('Create and push docker images') {
             when {
                 branch 'master'
             }
