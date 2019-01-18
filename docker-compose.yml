@@ -34,8 +34,8 @@ services:
       - rabbitmq
 
   dtupay-token:
-    container_name: dtupay-token
-    image: lagos/dtupay-token
+    container_name: tokencucomber
+    image: lagos/tokencucomber
     environment:
       - BROKER_NAME=rabbitmq
     networks:

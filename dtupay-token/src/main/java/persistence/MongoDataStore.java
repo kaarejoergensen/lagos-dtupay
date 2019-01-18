@@ -14,16 +14,16 @@ import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoDatastore implements  Datastore{
+public class MongoDataStore implements  Datastore{
 
     private MongoClient client;
     private MongoDatabase mdb;
 
-    public MongoDatastore(){
+    public MongoDataStore(){
         client = new MongoClient("localhost", 27017);
         mdb = client.getDatabase("TokenDatastore");
-        System.out.println("Succesfully connected to Mongo Token Datastore 'dtupay'");
-        clearDatabase();
+        System.out.println("Succesfully connected to Mongo Token Datastore");
+        clearDatabse();
     }
 
 
@@ -31,7 +31,7 @@ public class MongoDatastore implements  Datastore{
     @Override
     public void addTokens(Set<String> tokens, String userId) {
         MongoCollection unusedTokenCollection = mdb.getCollection("UnusedTokens");
-        for(String s : newTokens){
+        for(String s : tokens){
             Document newToken = new Document();
             newToken.append("userId", userId);
             newToken.append("token", s);
