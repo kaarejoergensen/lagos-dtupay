@@ -6,8 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="dtupay-api-customer" />
+        <module name="dtupay-api-manager" />
+        <module name="dtupay-api-merchant" />
         <module name="dtupay-bank" />
-        <module name="dtupay-customer-rest-api" />
         <module name="dtupay-mqconnector" />
         <module name="dtupay-token" />
       </profile>
@@ -20,4 +22,15 @@
       <module name="dtupay-token" target="1.8" />
     </bytecodeTargetLevel>
   </component>
+<<<<<<< HEAD
+=======
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dtupay-api" options="" />
+      <module name="dtupay-api-customer" options="" />
+      <module name="dtupay-bank" options="" />
+      <module name="dtupay-token" options="" />
+    </option>
+  </component>
+>>>>>>> 0afd6b93b49421d57ec27bfe90dc0f9845cb8887
 </project>

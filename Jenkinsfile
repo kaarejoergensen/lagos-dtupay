@@ -8,7 +8,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "echo ${env.BUILD_NUMBER}"
                 sh 'mvn clean compile'
             }
         }
@@ -18,8 +17,21 @@ pipeline {
             }
         }
         stage('Create docker images') {
+            when {
+                not {
+                    branch 'master'
+                }
+            }
             steps {
-                sh 'mvn package'
+                sh "mvn package -Dbuild.number=${env.BUILD_NUMBER}"
+            }
+        }
+        stage('Create and push docker images') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER}"
             }
         }
     }

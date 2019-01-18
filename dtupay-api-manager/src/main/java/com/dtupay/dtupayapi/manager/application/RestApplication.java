@@ -1,4 +1,4 @@
-package com.dtupay.dtupayapi.dtupayapi.rest.application;
+package com.dtupay.dtupayapi.manager.application;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

@@ -1,4 +1,4 @@
-package com.dtupay.dtupayapi.dtupayapi.rest.models;
+package com.dtupay.dtupayapi.customer.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
