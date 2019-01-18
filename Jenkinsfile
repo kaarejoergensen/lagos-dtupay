@@ -22,6 +22,9 @@ pipeline {
             }
         }
         stage('Push docker images') {
+            when {
+                branch 'master'
+            }
             steps {
                 sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER}"
             }
