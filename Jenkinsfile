@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Create docker images') {
             steps {
-                sh 'mvn package'
+                sh "mvn package -Dbuild.number=${env.BUILD_NUMBER}"
             }
         }
         stage('Push docker images') {
