@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'echo ${env.BUILD_NUMBER}'
+                sh "echo ${env.BUILD_NUMBER}"
                 sh 'mvn clean compile'
             }
         }
