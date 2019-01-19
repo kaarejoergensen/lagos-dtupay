@@ -15,9 +15,15 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="dtupay-api" target="1.8" />
+      <module name="dtupay" target="1.8" />
+      <module name="dtupay-bank" target="1.8" />
+      <module name="dtupay-customer-rest-api" target="1.8" />
+      <module name="dtupay-mqconnector" target="1.8" />
+      <module name="dtupay-token" target="1.8" />
     </bytecodeTargetLevel>
   </component>
+<<<<<<< HEAD
+=======
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="dtupay-api" options="" />
@@ -26,4 +32,5 @@
       <module name="dtupay-token" options="" />
     </option>
   </component>
+>>>>>>> 0afd6b93b49421d57ec27bfe90dc0f9845cb8887
 </project>

@@ -9,6 +9,7 @@ public class MemoryDataStore implements Datastore {
     private Set<String> usedTokens;
 
     public MemoryDataStore() {
+
         this.numberOfUnUsedTokensMap = new HashMap<>();
 
         this.usedTokens = new HashSet<>();
