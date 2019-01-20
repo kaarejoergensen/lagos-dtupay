@@ -1,11 +1,15 @@
 package persistence;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ClusterSettings;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.bson.Document;
@@ -18,18 +22,31 @@ import static com.mongodb.client.model.Filters.eq;
 public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;
 
-    public MongoDataStore() {
-        this(ServerAddress.defaultHost());
+    public MongoDataStore() throws IOException {
+        this(Collections.singletonList(ServerAddress.defaultHost()));
     }
 
-    public MongoDataStore(String host){
-        MongoCredential mongoCredential = MongoCredential.createCredential("root",
-                "admin",
-                "rootPassXXX".toCharArray());
-        MongoClient client = new MongoClient(new ServerAddress(host), Collections.singletonList(mongoCredential));
-        mdb = client.getDatabase("dtupay");
-        System.out.println("Successfully connected to Mongo Token Datastore");
-        this.reset();
+    public MongoDataStore(String host) throws IOException {
+        this(Collections.singletonList(host));
+    }
+
+    public MongoDataStore(List<String> hosts) throws IOException {
+        boolean connectionSuccess = false;
+        for (String host : hosts) {
+            try {
+                MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
+                MongoClient client = new MongoClient(new ServerAddress(host), mongoClientOptions);
+                mdb = client.getDatabase("dtupay");
+                this.reset();
+                System.err.println("Connection to mongo host '" + host + "' suceeded");
+                connectionSuccess = true;
+                break;
+            } catch (Exception e) {
+                System.err.println("Connection to mongo host '" + host + "' failed");
+            }
+        }
+        if (!connectionSuccess)
+            throw new RuntimeException("No valid mongo host found in list [" + String.join(",", hosts) + "]");
     }
 
     @Override

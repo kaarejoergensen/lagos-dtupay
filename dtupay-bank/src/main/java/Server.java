@@ -8,14 +8,19 @@ import models.User;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 public class Server extends RPCServer {
-    protected static final String RPC_QUEUE_NAME = "rpc_queue_bank";
+    static final String RPC_QUEUE_NAME = "rpc_queue_bank";
     private Bank bank = new BankSOAP();
     private Gson gson = new Gson();
 
     public static void main(String[] args) throws IOException, TimeoutException {
+        if (args.length < 1) {
+            System.out.println("Usage: app.jar brokerHost");
+            return;
+        }
         RPCServer rpcServer = new Server();
         rpcServer.run(args[0], RPC_QUEUE_NAME);
     }
@@ -23,7 +28,7 @@ public class Server extends RPCServer {
     @Override
     protected String implementation(String... arguments) {
         if (arguments.length < 1)
-            return this.error("Server error!");
+            return this.error("Too few arguments!");
         try {
             return this.call(arguments);
         } catch (BankServiceException_Exception e) {

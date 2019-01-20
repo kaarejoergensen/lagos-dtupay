@@ -1,19 +1,26 @@
 import base.Method;
 import base.RPCServer;
+import persistence.Datastore;
 import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 public class Server extends RPCServer {
-    protected static final String RPC_QUEUE_NAME = "rpc_queue_token";
+    static final String RPC_QUEUE_NAME = "rpc_queue_token";
     private TokenProvider tokenProvider;
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        final TokenProvider tokenProvider = new TokenProvider(new MemoryDataStore());
-        RPCServer rpcServer = new Server(tokenProvider);
+        if (args.length < 2) {
+            System.out.println("Usage: app.jar brokerHost mongoHost");
+            return;
+        }
+
+        Datastore datastore = new MongoDataStore(args[1]);
+        RPCServer rpcServer = new Server(new TokenProvider(datastore));
         rpcServer.run(args[0], RPC_QUEUE_NAME);
     }
 

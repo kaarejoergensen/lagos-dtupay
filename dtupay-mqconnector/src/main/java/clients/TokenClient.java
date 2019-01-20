@@ -6,21 +6,28 @@ import exceptions.ClientException;
 import utils.JSONMapper;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 public class TokenClient {
     private static final String RPC_QUEUE_NAME = "rpc_queue_token";
     private RPCClient rpcClient;
 
-    public TokenClient(String host, String queue) throws IOException, TimeoutException {
-        rpcClient = new RPCClient(host, queue);
+    public TokenClient(List<String> hosts) throws IOException, TimeoutException {
+        this(hosts, RPC_QUEUE_NAME);
     }
 
     public TokenClient(String host) throws IOException, TimeoutException {
-        this(host, RPC_QUEUE_NAME);
+        this(Collections.singletonList(host), RPC_QUEUE_NAME);
+    }
+
+    public TokenClient(String host, String queue) throws IOException, TimeoutException {
+        this(Collections.singletonList(host), queue);
+    }
+
+
+    public TokenClient(List<String> hosts, String queue) throws IOException, TimeoutException {
+        rpcClient = new RPCClient(hosts, queue);
     }
 
     public Set<String> getTokens(String userName, String userId, int numberOfTokens) throws ClientException {

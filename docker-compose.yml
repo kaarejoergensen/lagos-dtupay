@@ -4,9 +4,18 @@ services:
     container_name: rabbitmq
     image: rabbitmq
     hostname: "rabbit1"
-    environment:
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    #environment:
+    #  RABBITMQ_DEFAULT_USER: "rabbitmq"
+    #  RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    networks:
+      - "dtupay-network"
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    #environment:
+    #  - MONGO_INITDB_ROOT_USERNAME=root
+    #  - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
     networks:
       - "dtupay-network"
 
@@ -14,7 +23,7 @@ services:
     container_name: dtupay-bank
     image: lagos/dtupay-bank
     environment:
-      - BROKER_NAME=rabbitmq
+      - BROKER_HOST_NAME=rabbitmq
     networks:
       - "dtupay-network"
     depends_on:
@@ -24,21 +33,13 @@ services:
     container_name: dtupay-token
     image: lagos/dtupay-token
     environment:
-      - BROKER_NAME=rabbitmq
+      - BROKER_HOST_NAME=rabbitmq
+      - MONGO_HOST_NAME=mongo
     networks:
       - "dtupay-network"
     depends_on:
       - rabbitmq
       - mongo
-
-  mongo:
-    container_name: mongo
-    image: mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
-    networks:
-      - "dtupay-network"
 
   dtupay-api-customer:
     container_name: dtupay-api-customer

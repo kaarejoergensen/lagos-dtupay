@@ -10,6 +10,8 @@ import utils.JSONMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -21,14 +23,41 @@ public class RPCClient implements AutoCloseable {
     private String queueName;
 
     public RPCClient(String host, String queueName) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host != null ? host : "localhost");
-        factory.setUsername("rabbitmq");
-        factory.setPassword("rabbitmq");
+        this(Collections.singletonList(host), queueName);
+    }
 
-        connection = factory.newConnection();
-        channel = connection.createChannel();
+    public RPCClient(List<String> hosts, String queueName) throws IOException, TimeoutException {
+        if (hosts == null || hosts.isEmpty() || queueName == null)
+            throw new IllegalArgumentException("No arguments can be null or empty");
         this.queueName = queueName;
+
+        ConnectionFactory factory = new ConnectionFactory();
+        boolean connectionSuccess = false;
+        for (int numberOfTries = 5; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
+            for (String host : hosts) {
+                factory.setHost(host);
+                try {
+                    connection = factory.newConnection();
+                    connectionSuccess = true;
+                    System.out.println("Connection to " + host + " succeeded!");
+                    break;
+                } catch (IOException e) {
+                    System.err.println("Connection to " + host + " could not be established");
+                }
+            }
+            if (!connectionSuccess) {
+                System.err.println("Tried all hosts, sleeping 5 seconds");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (!connectionSuccess)
+            throw new TimeoutException("Connection to broker could not be established");
+
+        channel = connection.createChannel();
     }
 
     public String call(String... arguments) throws IOException, InterruptedException, ClientException {

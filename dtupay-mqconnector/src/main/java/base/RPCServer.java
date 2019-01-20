@@ -9,6 +9,8 @@ import utils.JSONMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public abstract class RPCServer {
@@ -16,29 +18,38 @@ public abstract class RPCServer {
     }
 
     public void run(String host, String queueName) throws IOException, TimeoutException {
+        this.run(Collections.singletonList(host), queueName);
+    }
+
+    public void run(List<String> hosts, String queueName) throws IOException, TimeoutException {
+        if (hosts == null || hosts.isEmpty() || queueName == null)
+            throw new IllegalArgumentException("No arguments can be null or empty");
+
         ConnectionFactory factory = new ConnectionFactory();
-        System.out.println(" [x] Connecting to host " + (host != null ? host : "localhost") );
-        factory.setHost(host != null ? host : "localhost");
-        factory.setUsername("rabbitmq");
-        factory.setPassword("rabbitmq");
         boolean connectionSuccess = false;
-        for (int i = 0; i < 6; i++) {
-            try {
-                Connection connectionTest = factory.newConnection();
-                connectionTest.close();
-                connectionSuccess = true;
-                break;
-            } catch (IOException e) {
-                System.out.println("Server: Connection refused, waiting 5 seconds");
+        for (int numberOfTries = 5; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
+            for (String host : hosts) {
+                factory.setHost(host);
+                try {
+                    factory.newConnection();
+                    connectionSuccess = true;
+                    System.out.println("Connection to " + host + " succeeded!");
+                    break;
+                } catch (IOException e) {
+                    System.err.println("Connection to " + host + " could not be established");
+                }
+            }
+            if (!connectionSuccess) {
+                System.err.println("Tried all hosts, sleeping 5 seconds");
                 try {
                     Thread.sleep(5000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
         if (!connectionSuccess)
-            throw new TimeoutException("Connection to broker could not be established!");
+            throw new TimeoutException("Connection to broker could not be established");
 
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {

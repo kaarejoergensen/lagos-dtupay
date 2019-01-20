@@ -2,12 +2,17 @@ import base.RPCServer;
 import clients.TokenClient;
 import exceptions.ClientException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import persistence.Datastore;
+import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -17,39 +22,29 @@ import static org.junit.Assert.assertThat;
 
 public class TokenRPCTest {
     private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
-                                                                    // Use localhost when running locally
-    private static final String MONGO_HOSTNAME = "mongo";           // Should always be "mongo" for prod.
-                                                                    // Use localhost when running locally
+    private static final List<String> RABBITMQ_HOSTS = Arrays.asList(RABBITMQ_HOSTNAME, "localhost");
+    private static final String MONGO_HOSTNAME = "mongo";           // Should always be "mongo" for jenkins.
+    private static final List<String> MONGO_HOSTS = Arrays.asList(MONGO_HOSTNAME, "localhost");
+
     private String userName = "core";
     private String userId = "1234";
-
     private TokenClient tokenClient;
 
-    public TokenRPCTest() throws TimeoutException, InterruptedException {
-        for (int i = 0; i < 6; i++) {
-            try {
-                tokenClient = new TokenClient(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
-                System.out.println("Created TokenClient");
-                break;
-            } catch (IOException e) {
-                System.out.println("Client: Connection refused, waiting 5 seconds");
-                Thread.sleep(5000);
-            }
-        }
-        if (tokenClient == null)
-            throw new TimeoutException("Connection to broker could not be established!");
+    public TokenRPCTest() throws TimeoutException, IOException {
+        tokenClient = new TokenClient(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test");
     }
 
     @BeforeClass
-    public static void initServer() {
-        TokenProvider tokenProvider = new TokenProvider(new MongoDataStore(MONGO_HOSTNAME));
+    public static void initServer() throws IOException {
+        TokenProvider tokenProvider = new TokenProvider(new MongoDataStore(MONGO_HOSTS));
         RPCServer rpcServer = new Server(tokenProvider);
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
+                rpcServer.run(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test");
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
+                Assert.fail();
             }
         }).start();
         System.out.println("Started in new thread");

@@ -16,6 +16,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -24,12 +25,20 @@ public class BankClient {
     private RPCClient rpcClient;
     private Gson gson;
 
+    public BankClient(List<String> hosts) throws IOException, TimeoutException {
+        this(hosts, RPC_QUEUE_NAME);
+    }
+
     public BankClient(String host) throws IOException, TimeoutException {
-        this(host, RPC_QUEUE_NAME);
+        this(Collections.singletonList(host), RPC_QUEUE_NAME);
     }
 
     public BankClient(String host, String queue) throws IOException, TimeoutException {
-        rpcClient = new RPCClient(host, queue);
+        this(Collections.singletonList(host), queue);
+    }
+
+    public BankClient(List<String> hosts, String queue) throws IOException, TimeoutException {
+        rpcClient = new RPCClient(hosts, queue);
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Deserializer())
                 .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Serializer())

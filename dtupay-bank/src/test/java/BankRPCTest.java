@@ -6,12 +6,14 @@ import models.AccountInfo;
 import models.Transaction;
 import models.User;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -21,25 +23,15 @@ import static org.junit.Assert.assertThat;
 
 
 public class BankRPCTest {
-    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for prod.
-                                                                    // Use localhost when running locally
+    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
+    private static final List<String> HOSTS = Arrays.asList(RABBITMQ_HOSTNAME, "localhost");
+
     private BankClient bank;
     private List<String> createdAccounts;
 
-    public BankRPCTest() throws TimeoutException, InterruptedException {
+    public BankRPCTest() throws TimeoutException, IOException {
         createdAccounts = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            try {
-                bank = new BankClient(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
-                System.out.println("Created BankClient");
-                break;
-            } catch (IOException e) {
-                System.out.println("Client: Connection refused, waiting 5 seconds");
-                Thread.sleep(5000);
-            }
-        }
-        if (bank == null)
-            throw new TimeoutException("Connection to broker could not be established!");
+        bank = new BankClient(HOSTS, Server.RPC_QUEUE_NAME + "-test");
     }
 
     @BeforeClass
@@ -48,9 +40,10 @@ public class BankRPCTest {
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
+                rpcServer.run(HOSTS, Server.RPC_QUEUE_NAME + "-test");
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
+                Assert.fail();
             }
         }).start();
         System.out.println("Started in new thread");
