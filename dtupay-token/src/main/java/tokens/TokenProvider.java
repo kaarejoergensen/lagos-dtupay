@@ -53,6 +53,10 @@ public class TokenProvider {
         return false;
     }
 
+    public void reset() {
+        this.datastore.reset();
+    }
+
     private String issueToken(String userName, String userId, String UUID) {
         LocalDateTime expiration = LocalDateTime.now().plusDays(7);
         Date out = Date.from(expiration.atZone(ZoneId.systemDefault()).toInstant());
@@ -70,6 +74,7 @@ public class TokenProvider {
                     .setSigningKey(key)
                     .parseClaimsJws(tokenString);
         } catch(SignatureException | MalformedJwtException e) {
+            System.err.println("Token invalid: " + e.getMessage());
             return Optional.empty();
         }
         return Optional.of(claims);

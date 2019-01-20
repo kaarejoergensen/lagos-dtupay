@@ -22,7 +22,7 @@ public class MongoDataStore implements  Datastore{
     public MongoDataStore(){
         client = new MongoClient("localhost", 27017);
         mdb = client.getDatabase("TokenDatastore");
-        System.out.println("Succesfully connected to Mongo Token Datastore");
+        System.out.println("Successfully connected to Mongo Token Datastore");
         clearDatabse();
     }
 
@@ -88,9 +88,13 @@ public class MongoDataStore implements  Datastore{
         return unusedTokenSize == 1 && usedTokenSize == 0;
     }
 
+    @Override
+    public void reset() {
+        this.clearDatabse();
+    }
 
 
-    public void clearDatabse(){
+    private void clearDatabse(){
         mdb.getCollection("UnusedTokens").drop();
         mdb.getCollection("UsedTokens").drop();
         System.out.println("Datastore erased");

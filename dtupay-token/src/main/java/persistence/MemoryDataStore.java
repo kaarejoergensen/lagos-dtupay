@@ -16,13 +16,6 @@ public class MemoryDataStore implements Datastore {
         this.unUsedTokens = new HashSet<>();
     }
 
-    public void reset() {
-        this.numberOfUnUsedTokensMap = new HashMap<>();
-
-        this.usedTokens = new HashSet<>();
-        this.unUsedTokens = new HashSet<>();
-    }
-
     @Override
     public void addTokens(Set<String> newTokens, String userId) {
         Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
@@ -57,5 +50,12 @@ public class MemoryDataStore implements Datastore {
     @Override
     public boolean checkToken(String token) {
         return this.unUsedTokens.contains(token) && !this.usedTokens.contains(token);
+    }
+
+    @Override
+    public void reset() {
+        this.numberOfUnUsedTokensMap = new HashMap<>();
+        this.usedTokens = new HashSet<>();
+        this.unUsedTokens = new HashSet<>();
     }
 }

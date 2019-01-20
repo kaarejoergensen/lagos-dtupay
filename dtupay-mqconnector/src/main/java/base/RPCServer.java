@@ -62,6 +62,7 @@ public abstract class RPCServer {
                     String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
                     System.out.println(" [x] Received message: " + message);
                     response += this.implementation(JSONMapper.JSONToArray(message));
+                    System.out.println(" [x] Answering: " + response);
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                 } finally {

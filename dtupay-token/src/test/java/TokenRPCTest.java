@@ -2,13 +2,12 @@ import base.RPCServer;
 import clients.TokenClient;
 import exceptions.ClientException;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import persistence.MemoryDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -17,28 +16,17 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class TokenRPCTest {
-    private List<String> tokensToBeUsed = new ArrayList<>();
-
+    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
+                                                                    // Use localhost when running locally
     private String userName = "core";
     private String userId = "1234";
 
     private TokenClient tokenClient;
 
     public TokenRPCTest() throws TimeoutException, InterruptedException {
-        TokenProvider tokenProvider = new TokenProvider(new MemoryDataStore());
-        RPCServer rpcServer = new Server(tokenProvider);
-        System.out.println("Starting server");
-        new Thread(() -> {
-            try {
-                rpcServer.run("rabbitmq", Server.RPC_QUEUE_NAME + "-test");
-            } catch (IOException | TimeoutException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        System.out.println("Started in new thread");
         for (int i = 0; i < 6; i++) {
             try {
-                tokenClient = new TokenClient("rabbitmq", Server.RPC_QUEUE_NAME + "-test");
+                tokenClient = new TokenClient(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
                 System.out.println("Created TokenClient");
                 break;
             } catch (IOException e) {
@@ -48,6 +36,21 @@ public class TokenRPCTest {
         }
         if (tokenClient == null)
             throw new TimeoutException("Connection to broker could not be established!");
+    }
+
+    @BeforeClass
+    public static void initServer() {
+        TokenProvider tokenProvider = new TokenProvider(new MemoryDataStore());
+        RPCServer rpcServer = new Server(tokenProvider);
+        System.out.println("Starting server");
+        new Thread(() -> {
+            try {
+                rpcServer.run(RABBITMQ_HOSTNAME, Server.RPC_QUEUE_NAME + "-test");
+            } catch (IOException | TimeoutException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        System.out.println("Started in new thread");
     }
 
     @Test
@@ -67,11 +70,11 @@ public class TokenRPCTest {
 
     @Test
     public void tamperedToken() throws ClientException {
+        this.tokenClient.reset();
         Set<String> tokens = tokenClient.getTokens(this.userName, this.userId, 1);
         assertThat(tokens, is(notNullValue()));
         assertThat(tokens.size(), is(1));
         assertThat(tokenClient.useToken(tokens.iterator().next() + "1234"), is(false));
-        this.tokensToBeUsed.addAll(tokens);
     }
 
     @Test(expected = ClientException.class)
@@ -99,21 +102,18 @@ public class TokenRPCTest {
         tokens.addAll(tokenClient.getTokens(this.userName, this.userId, 1));
         assertThat(tokens, is(notNullValue()));
         assertThat(tokens.size(), is(2));
-        tokenClient.useToken(tokens.iterator().next());
+        assertThat(tokenClient.useToken(tokens.iterator().next()), is(true));
         tokens.addAll(tokenClient.getTokens(this.userName, this.userId, 1));
-        tokensToBeUsed.addAll(tokens);
     }
 
     @Test(expected = ClientException.class)
     public void maxOneUnusedToken() throws ClientException {
-        tokensToBeUsed.addAll(tokenClient.getTokens(this.userName, this.userId, 2));
+        tokenClient.getTokens(this.userName, this.userId, 2);
         tokenClient.getTokens(this.userName, this.userId, 1);
     }
 
     @After
     public void deleteTokens() throws ClientException {
-        for (String token : this.tokensToBeUsed)
-            this.tokenClient.useToken(token);
-        this.tokensToBeUsed.clear();
+        this.tokenClient.reset();
     }
 }

@@ -42,6 +42,10 @@ public class Server extends RPCServer {
             case useToken:
                 result = tokenProvider.useToken(arguments[1]);
                 break;
+            case reset:
+                tokenProvider.reset();
+                result = true;
+                break;
             default:
                 return this.error("No method found: " + method);
         }

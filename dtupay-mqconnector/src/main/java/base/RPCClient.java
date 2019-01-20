@@ -49,7 +49,6 @@ public class RPCClient implements AutoCloseable {
 
         String ctag = channel.basicConsume(replyQueueName, true, (consumerTag, delivery) -> {
             if (delivery.getProperties().getCorrelationId().equals(corrId)) {
-                System.out.println("Delivery: " + new String(delivery.getBody(), StandardCharsets.UTF_8));
                 response.offer(new String(delivery.getBody(), StandardCharsets.UTF_8));
             }
         }, consumerTag -> {

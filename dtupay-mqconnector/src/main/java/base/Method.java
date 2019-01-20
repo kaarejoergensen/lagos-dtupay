@@ -4,6 +4,7 @@ public class Method {
     public enum Token {
         getTokens,
         useToken,
+        reset
     }
 
     public enum Bank {
@@ -12,6 +13,6 @@ public class Method {
         getAccountByCprNumber,
         getAccounts,
         retireAccount,
-        transferMoneyFromTo;
+        transferMoneyFromTo
     }
 }

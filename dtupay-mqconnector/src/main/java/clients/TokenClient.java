@@ -40,4 +40,13 @@ public class TokenClient {
             throw new ClientException(e.getMessage(), e);
         }
     }
+
+    public boolean reset() throws ClientException {
+        try {
+            String result = this.rpcClient.call(Token.reset.toString());
+            return JSONMapper.JSONToBoolean(result);
+        } catch (IOException | InterruptedException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
 }

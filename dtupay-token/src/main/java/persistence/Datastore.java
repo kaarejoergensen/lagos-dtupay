@@ -12,4 +12,6 @@ public interface Datastore {
     boolean isTokenUnique(String token);
 
     boolean checkToken(String token);
+
+    void reset();
 }
