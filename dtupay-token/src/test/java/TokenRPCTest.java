@@ -4,7 +4,7 @@ import exceptions.ClientException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import persistence.MemoryDataStore;
+import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
@@ -16,7 +16,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class TokenRPCTest {
-    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
+    private static final String RABBITMQ_HOSTNAME = "localhost";     // Should always be "rabbitmq" for jenkins.
+                                                                    // Use localhost when running locally
+    private static final String MONGO_HOSTNAME = "mongo";           // Should always be "mongo" for prod.
                                                                     // Use localhost when running locally
     private String userName = "core";
     private String userId = "1234";
@@ -40,7 +42,7 @@ public class TokenRPCTest {
 
     @BeforeClass
     public static void initServer() {
-        TokenProvider tokenProvider = new TokenProvider(new MemoryDataStore());
+        TokenProvider tokenProvider = new TokenProvider(new MongoDataStore(MONGO_HOSTNAME));
         RPCServer rpcServer = new Server(tokenProvider);
         System.out.println("Starting server");
         new Thread(() -> {

@@ -1,5 +1,9 @@
 package persistence;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import javax.crypto.SecretKey;
 import java.util.*;
 
 public class MemoryDataStore implements Datastore {
@@ -14,6 +18,11 @@ public class MemoryDataStore implements Datastore {
 
         this.usedTokens = new HashSet<>();
         this.unUsedTokens = new HashSet<>();
+    }
+
+    @Override
+    public SecretKey getSecretKey() {
+        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     @Override

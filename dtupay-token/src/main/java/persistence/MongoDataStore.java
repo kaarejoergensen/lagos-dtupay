@@ -1,32 +1,51 @@
 package persistence;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.Cursor;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.bson.Document;
+import org.bson.types.Binary;
+
+import javax.crypto.SecretKey;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoDataStore implements  Datastore{
-
-    private MongoClient client;
+public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;
 
-    public MongoDataStore(){
-        client = new MongoClient("localhost", 27017);
-        mdb = client.getDatabase("TokenDatastore");
-        System.out.println("Successfully connected to Mongo Token Datastore");
-        clearDatabse();
+    public MongoDataStore() {
+        this(ServerAddress.defaultHost());
     }
 
+    public MongoDataStore(String host){
+        MongoCredential mongoCredential = MongoCredential.createCredential("root",
+                "admin",
+                "rootPassXXX".toCharArray());
+        MongoClient client = new MongoClient(new ServerAddress(host), Collections.singletonList(mongoCredential));
+        mdb = client.getDatabase("dtupay");
+        System.out.println("Successfully connected to Mongo Token Datastore");
+        this.reset();
+    }
 
+    @Override
+    public SecretKey getSecretKey() {
+        MongoCollection secretKeyCollection = mdb.getCollection("Key");
+        Document key = (Document) secretKeyCollection.find().first();
+        if (key == null || key.get("key") == null) {
+            SecretKey generatedKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            Document newKey = new Document();
+            newKey.append("key", Base64.getEncoder().encode(generatedKey.getEncoded()));
+            secretKeyCollection.insertOne(newKey);
+            return generatedKey;
+        } else {
+            return Keys.hmacShaKeyFor(((Binary)key.get("key")).getData());
+        }
+    }
 
     @Override
     public void addTokens(Set<String> tokens, String userId) {
@@ -43,12 +62,12 @@ public class MongoDataStore implements  Datastore{
     public void useToken(String token, String userId){
         MongoCollection unusedTokenCollection = mdb.getCollection("UnusedTokens");
 
-        ArrayList queryList = new ArrayList<>();
+        ArrayList<BasicDBObject> queryList = new ArrayList<>();
         queryList.add(new BasicDBObject("userId", userId));
         queryList.add(new BasicDBObject("token", token));
         BasicDBObject query = new BasicDBObject("$and", queryList);
         Document extractedToken = (Document)unusedTokenCollection.find(query).first();
-        if(extractedToken == null) throw new IllegalArgumentException("Token does not exist"); //Fant ingen tokens bruh
+        if(extractedToken == null) throw new IllegalArgumentException("Token does not exist");
         unusedTokenCollection.deleteOne(extractedToken);
 
         MongoCollection usedTokenCollection = mdb.getCollection("UsedTokens");
@@ -90,11 +109,6 @@ public class MongoDataStore implements  Datastore{
 
     @Override
     public void reset() {
-        this.clearDatabse();
-    }
-
-
-    private void clearDatabse(){
         mdb.getCollection("UnusedTokens").drop();
         mdb.getCollection("UsedTokens").drop();
         System.out.println("Datastore erased");
@@ -105,6 +119,7 @@ public class MongoDataStore implements  Datastore{
         try {
             while (cursor.hasNext()) {
                 count++;
+                cursor.next();
             }
         } finally {
             cursor.close();

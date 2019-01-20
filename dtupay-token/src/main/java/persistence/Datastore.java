@@ -1,8 +1,11 @@
 package persistence;
 
+import javax.crypto.SecretKey;
 import java.util.Set;
 
 public interface Datastore {
+    SecretKey getSecretKey();
+
     void addTokens(Set<String> tokens, String userId);
 
     void useToken(String token, String userId);

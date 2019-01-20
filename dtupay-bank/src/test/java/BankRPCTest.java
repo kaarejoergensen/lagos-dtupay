@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 
 
 public class BankRPCTest {
-    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
+    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for prod.
                                                                     // Use localhost when running locally
     private BankClient bank;
     private List<String> createdAccounts;

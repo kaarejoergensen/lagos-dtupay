@@ -1,8 +1,10 @@
 package tokens;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import io.jsonwebtoken.security.Keys;
 import persistence.Datastore;
 
 import java.security.Key;
@@ -12,12 +14,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TokenProvider {
-    private Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private Key key;
 
     private Datastore datastore;
 
     public TokenProvider(Datastore datastore) {
         this.datastore = datastore;
+        this.key = datastore.getSecretKey();
     }
 
     public Set<String> getTokens(String userName, String userId, int numberOfTokens) throws IllegalArgumentException {
