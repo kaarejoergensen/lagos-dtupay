@@ -23,9 +23,11 @@ public class BankTest {
 
     @Test
     public void createAccount() throws BankServiceException_Exception {
+
         User user = new User("995566-2233","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user);
         String accountId = this.bank.createAccountWithBalance(user, balance);
         assertThat(accountId, is(notNullValue()));
         assertThat(accountId, is(not("")));
@@ -37,6 +39,7 @@ public class BankTest {
         User user = new User("995566-2233","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user);
         String accountId = this.bank.createAccountWithBalance(user, balance);
         assertThat(accountId, is(notNullValue()));
         assertThat(accountId, is(not("")));
@@ -55,6 +58,7 @@ public class BankTest {
         User user = new User("995566-2233","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user);
         String accountId = this.bank.createAccountWithBalance(user, balance);
         assertThat(accountId, is(notNullValue()));
         assertThat(accountId, is(not("")));
@@ -73,6 +77,7 @@ public class BankTest {
         User user = new User("995566-2233","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user);
         String accountId = this.bank.createAccountWithBalance(user, balance);
         assertThat(accountId, is(notNullValue()));
         assertThat(accountId, is(not("")));
@@ -94,6 +99,7 @@ public class BankTest {
         User user = new User("995566-2233","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user);
         String accountId = this.bank.createAccountWithBalance(user, balance);
         assertThat(accountId, is(notNullValue()));
         assertThat(accountId, is(not("")));
@@ -108,6 +114,8 @@ public class BankTest {
         User user2 = new User("662288-5522","FirstName","LastName");
         BigDecimal balance = new BigDecimal(1000);
 
+        this.ensureUserDoesntExist(user1);
+        this.ensureUserDoesntExist(user2);
         String accountId1 = this.bank.createAccountWithBalance(user1, balance);
         String accountId2 = this.bank.createAccountWithBalance(user2, balance);
 
@@ -152,6 +160,14 @@ public class BankTest {
         assertThat(transaction2.getCreditor(), is("this account"));
         assertThat(transaction2.getDebtor(), is(accountId1));
         assertThat(transaction2.getDescription(), is("Test transfer"));
+    }
+
+    private void ensureUserDoesntExist(User user) {
+        try {
+            Account account = this.bank.getAccountByCprNumber(user.getCprNumber());
+            this.bank.retireAccount(account.getId());
+        } catch (BankServiceException_Exception e) {
+        }
     }
 
     @After
