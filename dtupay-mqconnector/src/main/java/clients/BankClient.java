@@ -16,6 +16,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -33,6 +34,10 @@ public class BankClient extends Client {
 
     public BankClient(String host) throws IOException, TimeoutException {
         super(Collections.singletonList(host), RPC_QUEUE_NAME);
+    }
+
+    public BankClient(String host, String username, String password) throws IOException, TimeoutException {
+        super(Collections.singletonList(host), RPC_QUEUE_NAME, username, password);
     }
 
     public BankClient(String host, String queue) throws IOException, TimeoutException {

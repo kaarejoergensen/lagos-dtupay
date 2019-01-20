@@ -1,6 +1,7 @@
 package com.dtupay.dtupayapi.customer.endpoints;
 
 
+import clients.BankClient;
 import clients.TokenClient;
 import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import com.google.zxing.BarcodeFormat;
@@ -11,7 +12,9 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -26,11 +29,16 @@ import java.util.concurrent.TimeoutException;
 
 @Path("/v1/customer")
 public class CustomerEndpoint {
-
-    //Cunt
+    private TokenClient tokenClient;
+    private BankClient bankClient;
 
     private final int QR_SIZE = 300;
 	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
+
+    public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
+        this.tokenClient = new TokenClient(host, username, password);
+        this.bankClient = new BankClient(host, username, password);
+    }
 
     @GET
     @Path("")
@@ -39,9 +47,9 @@ public class CustomerEndpoint {
                             @QueryParam("userId") String userId,
                             @QueryParam("numberOfTokens") Integer numberOfTokens) {
         try {
-            TokenClient tokenClient = new TokenClient("rabbitmq");
+
             return Response.ok(tokenClient.getTokens(username, userId, numberOfTokens)).build();
-        } catch (IOException | TimeoutException | ClientException e) {
+        } catch (ClientException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }

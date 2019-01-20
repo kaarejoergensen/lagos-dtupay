@@ -20,6 +20,10 @@ public class TokenClient extends Client {
         super(host, RPC_QUEUE_NAME);
     }
 
+    public TokenClient(String host, String username, String password) throws IOException, TimeoutException {
+        super(host, RPC_QUEUE_NAME, username, password);
+    }
+
     public TokenClient(String host, String queue) throws IOException, TimeoutException {
         super(host, queue);
     }
