@@ -1,3 +1,4 @@
+import base.Method;
 import base.RPCServer;
 import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
@@ -7,7 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class Server extends RPCServer {
-    private static final String RPC_QUEUE_NAME = "rpc_queue_token";
+    protected static final String RPC_QUEUE_NAME = "rpc_queue_token";
     private TokenProvider tokenProvider;
 
     public static void main(String[] args) throws IOException, TimeoutException {
@@ -16,13 +17,13 @@ public class Server extends RPCServer {
         rpcServer.run(args[0], RPC_QUEUE_NAME);
     }
 
-    private Server(TokenProvider tokenProvider) {
+    Server(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
     @Override
     protected String implementation(String... arguments) {
-        if (arguments.length < 2)
+        if (arguments.length < 1)
             return this.error("Server error!");
         try {
             return this.call(arguments);
@@ -34,11 +35,11 @@ public class Server extends RPCServer {
     private String call(String... arguments) {
         String method = arguments[0];
         Object result;
-        switch (method) {
-            case "getTokens":
+        switch (Method.Token.valueOf(method)) {
+            case getTokens:
                 result = tokenProvider.getTokens(arguments[1], arguments[2], Integer.parseInt(arguments[3]));
                 break;
-            case "useToken":
+            case useToken:
                 result = tokenProvider.useToken(arguments[1]);
                 break;
             default:

@@ -7,7 +7,6 @@ import com.rabbitmq.client.*;
 import utils.JSONMapper;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
@@ -26,8 +25,8 @@ public abstract class RPCServer {
                 Connection connection = factory.newConnection();
                 connection.close();
                 break;
-            } catch (ConnectException e) {
-                System.out.println("Connection refused, waiting 5 seconds");
+            } catch (IOException e) {
+                System.out.println("Server: Connection refused, waiting 5 seconds");
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e1) {

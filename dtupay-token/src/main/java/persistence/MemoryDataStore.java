@@ -16,6 +16,13 @@ public class MemoryDataStore implements Datastore {
         this.unUsedTokens = new HashSet<>();
     }
 
+    public void reset() {
+        this.numberOfUnUsedTokensMap = new HashMap<>();
+
+        this.usedTokens = new HashSet<>();
+        this.unUsedTokens = new HashSet<>();
+    }
+
     @Override
     public void addTokens(Set<String> newTokens, String userId) {
         Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
@@ -33,8 +40,7 @@ public class MemoryDataStore implements Datastore {
         Integer numberOfUnusedTokens = numberOfUnUsedTokensMap.get(userId);
         if (numberOfUnusedTokens == null)
             throw new IllegalArgumentException("Should never happen");
-        numberOfUnusedTokens -= 1;
-        this.numberOfUnUsedTokensMap.put(userId, numberOfUnusedTokens);
+        this.numberOfUnUsedTokensMap.put(userId, numberOfUnusedTokens - 1);
     }
 
     @Override

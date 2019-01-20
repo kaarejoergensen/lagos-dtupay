@@ -9,6 +9,7 @@ import utils.JSONMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -31,6 +32,7 @@ public class RPCClient implements AutoCloseable {
     }
 
     public String call(String... arguments) throws IOException, InterruptedException, ClientException {
+        System.out.println(" [ ] call: " + Arrays.toString(arguments));
         final String corrId = UUID.randomUUID().toString();
         final String message = JSONMapper.arrayToJSON(arguments);
 
@@ -47,6 +49,7 @@ public class RPCClient implements AutoCloseable {
 
         String ctag = channel.basicConsume(replyQueueName, true, (consumerTag, delivery) -> {
             if (delivery.getProperties().getCorrelationId().equals(corrId)) {
+                System.out.println("Delivery: " + new String(delivery.getBody(), StandardCharsets.UTF_8));
                 response.offer(new String(delivery.getBody(), StandardCharsets.UTF_8));
             }
         }, consumerTag -> {
@@ -54,6 +57,7 @@ public class RPCClient implements AutoCloseable {
 
         String result = response.take();
         channel.basicCancel(ctag);
+        System.out.println(" [ ] received: " + result);
         String error = JSONMapper.JSONToExceptionMessage(result);
         if (error != null)
             throw new ClientException(error);
