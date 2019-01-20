@@ -1,5 +1,5 @@
 node {
-    docker.image('rabbitmq').withRun('-d --hostname rabbit1 -e "RABBITMQ_DEFAULT_USER=rabbitmq" -e "RABBITMQ_DEFAULT_PASS=rabbitmq --name rabbitmq"') { c ->
+    docker.image('rabbitmq').withRun('-d --hostname rabbit1 -e "RABBITMQ_DEFAULT_USER=rabbitmq" -e "RABBITMQ_DEFAULT_PASS=rabbitmq" --name rabbitmq') { c ->
         docker.image('rabbitmq').inside("--network jenkinsnet") {
             echo 'Image started'
         }
