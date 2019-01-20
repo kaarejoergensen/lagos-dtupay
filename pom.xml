@@ -34,10 +34,6 @@
             <id>projectlombok.org</id>
             <url>http://projectlombok.org/mavenrepo</url>
         </repository>
-        <repository>
-            <id>palantir</id>
-            <url>https://dl.bintray.com/palantir/releases/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -70,12 +66,6 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.palantir.docker.compose</groupId>
-            <artifactId>docker-compose-rule-junit4</artifactId>
-            <version>0.34.0</version>
         </dependency>
 
         <dependency>

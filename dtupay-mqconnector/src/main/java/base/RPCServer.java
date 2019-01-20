@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.rabbitmq.client.*;
+import cucumber.runtime.Timeout;
 import utils.JSONMapper;
 
 import java.io.IOException;
@@ -20,10 +21,12 @@ public abstract class RPCServer {
         factory.setHost(host != null ? host : "localhost");
         factory.setUsername("rabbitmq");
         factory.setPassword("rabbitmq");
-        while (true) {
+        boolean connectionSuccess = false;
+        for (int i = 0; i < 6; i++) {
             try {
-                Connection connection = factory.newConnection();
-                connection.close();
+                Connection connectionTest = factory.newConnection();
+                connectionTest.close();
+                connectionSuccess = true;
                 break;
             } catch (IOException e) {
                 System.out.println("Server: Connection refused, waiting 5 seconds");
@@ -34,6 +37,8 @@ public abstract class RPCServer {
                 }
             }
         }
+        if (!connectionSuccess)
+            throw new TimeoutException("Connection to broker could not be established!");
 
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {

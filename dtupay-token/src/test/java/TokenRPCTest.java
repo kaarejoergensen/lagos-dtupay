@@ -1,10 +1,7 @@
 import base.RPCServer;
 import clients.TokenClient;
-import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import exceptions.ClientException;
 import org.junit.After;
-import org.junit.ClassRule;
 import org.junit.Test;
 import persistence.MemoryDataStore;
 import tokens.TokenProvider;
@@ -39,7 +36,7 @@ public class TokenRPCTest {
             }
         }).start();
         System.out.println("Started in new thread");
-        while (true) {
+        for (int i = 0; i < 6; i++) {
             try {
                 tokenClient = new TokenClient("rabbitmq", Server.RPC_QUEUE_NAME + "-test");
                 System.out.println("Created TokenClient");
@@ -49,6 +46,8 @@ public class TokenRPCTest {
                 Thread.sleep(5000);
             }
         }
+        if (tokenClient == null)
+            throw new TimeoutException("Connection to broker could not be established!");
     }
 
     @Test

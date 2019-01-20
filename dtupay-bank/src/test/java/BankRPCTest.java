@@ -1,14 +1,11 @@
 import base.RPCServer;
 import clients.BankClient;
-import com.palantir.docker.compose.DockerComposeRule;
-import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import exceptions.ClientException;
 import models.Account;
 import models.AccountInfo;
 import models.Transaction;
 import models.User;
 import org.junit.After;
-import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,7 +35,7 @@ public class BankRPCTest {
             }
         }).start();
         System.out.println("Started in new thread");
-        while (true) {
+        for (int i = 0; i < 6; i++) {
             try {
                 bank = new BankClient("rabbitmq", Server.RPC_QUEUE_NAME + "-test");
                 System.out.println("Created BankClient");
@@ -48,6 +45,8 @@ public class BankRPCTest {
                 Thread.sleep(5000);
             }
         }
+        if (bank == null)
+            throw new TimeoutException("Connection to broker could not be established!");
     }
 
     @Test
