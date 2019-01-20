@@ -39,7 +39,7 @@ public abstract class RPCServer {
         factory.setUsername(username);
         factory.setPassword(password);
         boolean connectionSuccess = false;
-        for (int numberOfTries = 5; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
+        for (int numberOfTries = 12; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
             for (String host : hosts) {
                 factory.setHost(host);
                 try {
