@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class TokenRPCTest {
-    private static final String RABBITMQ_HOSTNAME = "localhost";     // Should always be "rabbitmq" for jenkins.
+    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
                                                                     // Use localhost when running locally
     private static final String MONGO_HOSTNAME = "mongo";           // Should always be "mongo" for prod.
                                                                     // Use localhost when running locally
