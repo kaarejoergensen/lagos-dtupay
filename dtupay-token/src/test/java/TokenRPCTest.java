@@ -31,7 +31,7 @@ public class TokenRPCTest {
     private TokenClient tokenClient;
 
     public TokenRPCTest() throws TimeoutException, IOException {
-        tokenClient = new TokenClient(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test");
+        tokenClient = new TokenClient(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
     }
 
     @BeforeClass
@@ -41,7 +41,7 @@ public class TokenRPCTest {
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test");
+                rpcServer.run(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
                 Assert.fail();

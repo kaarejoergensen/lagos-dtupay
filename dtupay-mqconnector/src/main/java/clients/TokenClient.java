@@ -9,25 +9,31 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
-public class TokenClient {
+public class TokenClient extends Client {
     private static final String RPC_QUEUE_NAME = "rpc_queue_token";
-    private RPCClient rpcClient;
 
     public TokenClient(List<String> hosts) throws IOException, TimeoutException {
-        this(hosts, RPC_QUEUE_NAME);
+        super(hosts, RPC_QUEUE_NAME);
     }
 
     public TokenClient(String host) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), RPC_QUEUE_NAME);
+        super(host, RPC_QUEUE_NAME);
     }
 
     public TokenClient(String host, String queue) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), queue);
+        super(host, queue);
     }
 
-
     public TokenClient(List<String> hosts, String queue) throws IOException, TimeoutException {
-        rpcClient = new RPCClient(hosts, queue);
+        super(hosts, queue);
+    }
+
+    public TokenClient(String host, String queue, String username, String password) throws IOException, TimeoutException {
+        super(host, queue, username, password);
+    }
+
+    public TokenClient(List<String> hosts, String queue, String username, String password) throws IOException, TimeoutException {
+        super(hosts, queue, username, password);
     }
 
     public Set<String> getTokens(String userName, String userId, int numberOfTokens) throws ClientException {

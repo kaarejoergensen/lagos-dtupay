@@ -14,14 +14,14 @@ public class Server extends RPCServer {
     private TokenProvider tokenProvider;
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        if (args.length < 2) {
-            System.out.println("Usage: app.jar brokerHost mongoHost");
+        if (args.length < 4) {
+            System.out.println("Usage: app.jar brokerHost brokerUsername brokerPassword mongoHost");
             return;
         }
 
-        Datastore datastore = new MongoDataStore(args[1]);
+        Datastore datastore = new MongoDataStore(args[3]);
         RPCServer rpcServer = new Server(new TokenProvider(datastore));
-        rpcServer.run(args[0], RPC_QUEUE_NAME);
+        rpcServer.run(args[0], RPC_QUEUE_NAME, args[1], args[2]);
     }
 
     Server(TokenProvider tokenProvider) {

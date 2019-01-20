@@ -27,11 +27,21 @@ public class RPCClient implements AutoCloseable {
     }
 
     public RPCClient(List<String> hosts, String queueName) throws IOException, TimeoutException {
+        this(hosts, queueName, new ConnectionFactory().getUsername(), new ConnectionFactory().getPassword());
+    }
+
+    public RPCClient(String host, String queueName, String username, String password) throws IOException, TimeoutException {
+        this(Collections.singletonList(host), queueName, username, password);
+    }
+
+    public RPCClient(List<String> hosts, String queueName, String username, String password) throws IOException, TimeoutException {
         if (hosts == null || hosts.isEmpty() || queueName == null)
             throw new IllegalArgumentException("No arguments can be null or empty");
         this.queueName = queueName;
 
         ConnectionFactory factory = new ConnectionFactory();
+        factory.setUsername(username);
+        factory.setPassword(password);
         boolean connectionSuccess = false;
         for (int numberOfTries = 5; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
             for (String host : hosts) {

@@ -17,12 +17,12 @@ public class Server extends RPCServer {
     private Gson gson = new Gson();
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        if (args.length < 1) {
-            System.out.println("Usage: app.jar brokerHost");
+        if (args.length < 3) {
+            System.out.println("Usage: app.jar brokerHost brokerUsername brokerPassword");
             return;
         }
         RPCServer rpcServer = new Server();
-        rpcServer.run(args[0], RPC_QUEUE_NAME);
+        rpcServer.run(args[0], RPC_QUEUE_NAME, args[1], args[2]);
     }
 
     @Override

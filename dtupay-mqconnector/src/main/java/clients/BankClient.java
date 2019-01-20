@@ -20,29 +20,35 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public class BankClient {
-    protected static final String RPC_QUEUE_NAME = "rpc_queue_bank";
-    private RPCClient rpcClient;
-    private Gson gson;
+public class BankClient extends Client {
+    private static final String RPC_QUEUE_NAME = "rpc_queue_bank";
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Deserializer())
+            .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Serializer())
+            .create();
 
     public BankClient(List<String> hosts) throws IOException, TimeoutException {
-        this(hosts, RPC_QUEUE_NAME);
+        super(hosts, RPC_QUEUE_NAME);
     }
 
     public BankClient(String host) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), RPC_QUEUE_NAME);
+        super(Collections.singletonList(host), RPC_QUEUE_NAME);
     }
 
     public BankClient(String host, String queue) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), queue);
+        super(host, queue);
     }
 
     public BankClient(List<String> hosts, String queue) throws IOException, TimeoutException {
-        rpcClient = new RPCClient(hosts, queue);
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Deserializer())
-                .registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter.Serializer())
-                .create();
+        super(hosts, queue);
+    }
+
+    public BankClient(String host, String queue, String username, String password) throws IOException, TimeoutException {
+        super(host, queue, username, password);
+    }
+
+    public BankClient(List<String> hosts, String queue, String username, String password) throws IOException, TimeoutException {
+        super(hosts, queue, username, password);
     }
 
     public String createAccountWithBalance(User user, BigDecimal balance) throws ClientException {

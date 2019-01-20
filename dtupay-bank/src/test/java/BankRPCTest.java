@@ -31,7 +31,7 @@ public class BankRPCTest {
 
     public BankRPCTest() throws TimeoutException, IOException {
         createdAccounts = new ArrayList<>();
-        bank = new BankClient(HOSTS, Server.RPC_QUEUE_NAME + "-test");
+        bank = new BankClient(HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
     }
 
     @BeforeClass
@@ -40,7 +40,7 @@ public class BankRPCTest {
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(HOSTS, Server.RPC_QUEUE_NAME + "-test");
+                rpcServer.run(HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
                 Assert.fail();

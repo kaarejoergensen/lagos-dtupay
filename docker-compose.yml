@@ -4,9 +4,9 @@ services:
     container_name: rabbitmq
     image: rabbitmq
     hostname: "rabbit1"
-    #environment:
-    #  RABBITMQ_DEFAULT_USER: "rabbitmq"
-    #  RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
     networks:
       - "dtupay-network"
 
@@ -24,6 +24,8 @@ services:
     image: lagos/dtupay-bank
     environment:
       - BROKER_HOST_NAME=rabbitmq
+      - BROKER_HOST_USERNAME=rabbitmq
+      - BROKER_HOST_password=rabbitmq
     networks:
       - "dtupay-network"
     depends_on:
@@ -34,6 +36,8 @@ services:
     image: lagos/dtupay-token
     environment:
       - BROKER_HOST_NAME=rabbitmq
+      - BROKER_HOST_USERNAME=rabbitmq
+      - BROKER_HOST_password=rabbitmq
       - MONGO_HOST_NAME=mongo
     networks:
       - "dtupay-network"
