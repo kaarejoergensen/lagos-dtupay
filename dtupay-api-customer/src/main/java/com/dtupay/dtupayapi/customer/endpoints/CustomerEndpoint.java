@@ -40,19 +40,6 @@ public class CustomerEndpoint {
         this.bankClient = new BankClient(host, username, password);
     }
 
-    @GET
-    @Path("")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@QueryParam("username") String username,
-                            @QueryParam("userId") String userId,
-                            @QueryParam("numberOfTokens") Integer numberOfTokens) {
-        try {
-
-            return Response.ok(tokenClient.getTokens(username, userId, numberOfTokens)).build();
-        } catch (ClientException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
 
     private final String IMAGE_DIR = "/images/";
     private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
@@ -71,15 +58,16 @@ public class CustomerEndpoint {
         return "/v1/tokens/barcode/" + randomString + ".png";
     }
 
-	@GET
-    @Path("/{name}/{uid}/{numberOfRemainingTokens}")
-	public Response requestTokens(@PathParam("name") String username,
-                          @PathParam("uid") String userId,
-                          @PathParam("numberOfRemainingTokens") int number) {
-
+	@POST
+    @Path("/requestTokens")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response requestTokens(@QueryParam("name") String username,
+                          @QueryParam("uid") String userId,
+                          @QueryParam("count") int number) {
 		try {
             ArrayList<String> tokenString = new ArrayList<>();//this.barcodeProvider.getTokens(username, userId, number);
             Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
+
             for (String string : tokenString) {
                 QRCodeWriter qrCodeWriter = new QRCodeWriter();
                 try {
@@ -90,14 +78,15 @@ public class CustomerEndpoint {
                 }
             }
 
-            return Response.ok("customer").build();
+            return Response.ok(finalTokens).build();
         }catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught exception").build();
         }catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Caught exception").build();
         }
-
 	}
+
+
 
 
     @POST
