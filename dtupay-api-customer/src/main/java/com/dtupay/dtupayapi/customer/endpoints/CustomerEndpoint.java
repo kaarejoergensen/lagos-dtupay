@@ -74,6 +74,7 @@ public class CustomerEndpoint {
     /*
         Requires the date format 'dd-MM-yyyy'
      */
+    
     @GET
     @Path("/transactions")
     @Produces(MediaType.APPLICATION_JSON)
@@ -82,9 +83,9 @@ public class CustomerEndpoint {
             List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
             return Response.ok(transactions).build();
         } catch (ParseException e) {
-            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).entity("Could not parse date").build();
         } catch (ClientException e) {
-            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not connect bank client").build();
         }
     }
 
