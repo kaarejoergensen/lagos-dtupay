@@ -22,30 +22,24 @@ public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;
 
     public MongoDataStore() throws IOException {
-        this(Collections.singletonList(ServerAddress.defaultHost()),27017);
+        this(ServerAddress.defaultHost(),ServerAddress.defaultPort());
     }
 
     public MongoDataStore(String host) throws IOException {
-        this(Collections.singletonList(host), 27017);
+        this(host, ServerAddress.defaultPort());
     }
 
-    public MongoDataStore(List<String> hosts, int port) throws IOException {
-        boolean connectionSuccess = false;
-        for (String host : hosts) {
-            try {
-                MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
-                MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
-                mdb = client.getDatabase("dtupay");
-                this.reset();
-                System.err.println("Connection to mongo host '" + host + "' suceeded");
-                connectionSuccess = true;
-                break;
-            } catch (Exception e) {
-                System.err.println("Connection to mongo host '" + host + "' failed");
-            }
+    public MongoDataStore(String host, int port) {
+        try {
+            MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
+            MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
+            mdb = client.getDatabase("dtupay");
+            this.reset();
+            System.err.println("Connection to mongo host '" + host + "' suceeded");
+        } catch (Exception e) {
+            System.err.println("Connection to mongo host '" + host + "' failed");
+            throw new RuntimeException("No valid mongo host found in list [" + host + "]");
         }
-        if (!connectionSuccess)
-            throw new RuntimeException("No valid mongo host found in list [" + String.join(",", hosts) + "]");
     }
 
     @Override

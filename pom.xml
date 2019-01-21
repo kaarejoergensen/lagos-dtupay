@@ -80,6 +80,13 @@
             <version>1.18.4</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.10.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

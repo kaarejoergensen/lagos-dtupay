@@ -3,12 +3,12 @@ import clients.TokenClient;
 import exceptions.ClientException;
 import org.junit.*;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import persistence.Datastore;
 import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -22,30 +22,29 @@ public class TokenRPCTest {
     private TokenClient tokenClient;
 
     public TokenRPCTest() throws TimeoutException, IOException {
-        tokenClient = new TokenClient(Collections.singletonList(rabbitmq.getContainerIpAddress()),
-                                Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq",
-                                        rabbitmq.getFirstMappedPort());
+        tokenClient = new TokenClient(rabbitmq.getContainerIpAddress(), Server.RPC_QUEUE_NAME + "-test",
+                    "rabbitmq", "rabbitmq", rabbitmq.getFirstMappedPort());
     }
 
     @ClassRule
-    public static GenericContainer mongo = new GenericContainer<>("mongo")
-                                                .withExposedPorts(27017);
+    public static GenericContainer mongo = new GenericContainer<>("mongo").withExposedPorts(27017)
+            .waitingFor(Wait.forLogMessage(".*waiting for connections on port 27017.*", 1));
 
     @ClassRule
-    public static GenericContainer rabbitmq = new GenericContainer<>("rabbitmq")
-                                                .withExposedPorts(5672)
-                                                .withEnv("RABBITMQ_DEFAULT_USER", "rabbitmq").withEnv("RABBITMQ_DEFAULT_PASS", "rabbitmq");
+    public static GenericContainer rabbitmq = new GenericContainer<>("rabbitmq").withExposedPorts(5672)
+            .withEnv("RABBITMQ_DEFAULT_USER", "rabbitmq").withEnv("RABBITMQ_DEFAULT_PASS", "rabbitmq")
+            .waitingFor(Wait.forLogMessage(".*Server startup complete.*", 1));
 
     @BeforeClass
     public static void initServer() throws IOException {
-        Datastore datastore = new MongoDataStore(Collections.singletonList(mongo.getContainerIpAddress()), mongo.getFirstMappedPort());
+        Datastore datastore = new MongoDataStore(mongo.getContainerIpAddress(), mongo.getFirstMappedPort());
         TokenProvider tokenProvider = new TokenProvider(datastore);
         RPCServer rpcServer = new Server(tokenProvider);
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(Collections.singletonList(rabbitmq.getContainerIpAddress()),
-                        Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq", rabbitmq.getFirstMappedPort());
+                rpcServer.run(rabbitmq.getContainerIpAddress(),Server.RPC_QUEUE_NAME + "-test",
+                        "rabbitmq", "rabbitmq", rabbitmq.getFirstMappedPort());
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
                 Assert.fail();

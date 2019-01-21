@@ -9,7 +9,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import exceptions.ClientException;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.*;
@@ -116,6 +115,12 @@ public class CustomerEndpoint {
 		} else {
             return Response.status(Response.Status.BAD_REQUEST).entity("File not found").build();
         }
+    }
+
+    @GET
+    @Path("")
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("Success").build();
     }
 
 }
