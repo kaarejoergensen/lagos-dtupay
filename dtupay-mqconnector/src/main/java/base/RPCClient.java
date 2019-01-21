@@ -9,7 +9,6 @@ import utils.JSONMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +34,10 @@ public class RPCClient implements AutoCloseable {
     }
 
     public RPCClient(List<String> hosts, String queueName, String username, String password) throws IOException, TimeoutException {
+        this(hosts, queueName, username, password, -1);
+    }
+
+    public RPCClient(List<String> hosts, String queueName, String username, String password, int port) throws IOException, TimeoutException {
         if (hosts == null || hosts.isEmpty() || queueName == null)
             throw new IllegalArgumentException("No arguments can be null or empty");
         this.queueName = queueName;
@@ -42,6 +45,7 @@ public class RPCClient implements AutoCloseable {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(username);
         factory.setPassword(password);
+        factory.setPort(port);
         boolean connectionSuccess = false;
         for (int numberOfTries = 12; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
             for (String host : hosts) {

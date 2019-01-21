@@ -1,21 +1,20 @@
 package persistence;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.connection.ClusterSettings;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.bson.Document;
 import org.bson.types.Binary;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -23,19 +22,19 @@ public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;
 
     public MongoDataStore() throws IOException {
-        this(Collections.singletonList(ServerAddress.defaultHost()));
+        this(Collections.singletonList(ServerAddress.defaultHost()),27017);
     }
 
     public MongoDataStore(String host) throws IOException {
-        this(Collections.singletonList(host));
+        this(Collections.singletonList(host), 27017);
     }
 
-    public MongoDataStore(List<String> hosts) throws IOException {
+    public MongoDataStore(List<String> hosts, int port) throws IOException {
         boolean connectionSuccess = false;
         for (String host : hosts) {
             try {
                 MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
-                MongoClient client = new MongoClient(new ServerAddress(host), mongoClientOptions);
+                MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
                 mdb = client.getDatabase("dtupay");
                 this.reset();
                 System.err.println("Connection to mongo host '" + host + "' suceeded");

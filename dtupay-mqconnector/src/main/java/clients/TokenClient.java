@@ -1,13 +1,14 @@
 package clients;
 
 import base.Method.Token;
-import base.RPCClient;
-import cucumber.api.java.sl.In;
 import exceptions.ClientException;
 import utils.JSONMapper;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 public class TokenClient extends Client {
@@ -39,6 +40,10 @@ public class TokenClient extends Client {
 
     public TokenClient(List<String> hosts, String queue, String username, String password) throws IOException, TimeoutException {
         super(hosts, queue, username, password);
+    }
+
+    public TokenClient(List<String> hosts, String queue, String username, String password, int port) throws IOException, TimeoutException {
+        super(hosts, queue, username, password, port);
     }
 
     public Set<String> getTokens(String userName, String userId, int numberOfTokens) throws ClientException {

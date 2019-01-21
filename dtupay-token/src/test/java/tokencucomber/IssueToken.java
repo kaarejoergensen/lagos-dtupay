@@ -7,7 +7,6 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import persistence.Datastore;
 import persistence.MemoryDataStore;
-import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
@@ -32,6 +31,7 @@ public class IssueToken {
     private TokenProvider tokenProvider;
 
     private Set<String> tokens;
+
 
     @Given("^the user id, user name and the number of tokens$")
     public void the_user_id_name_numberOfTokens() {
@@ -108,7 +108,8 @@ public class IssueToken {
         this.userName = username;
         this.userId = userid;
         this.numberOfTokens = nrOfTokens;
-        datastore = new MongoDataStore(MONGO_HOSTS);
+        datastore = new MemoryDataStore();
+        //datastore = new MongoDataStore(MONGO_HOSTS, 27017);
         tokenProvider = new TokenProvider(datastore);
     }
 

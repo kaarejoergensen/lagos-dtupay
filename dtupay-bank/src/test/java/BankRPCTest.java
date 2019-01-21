@@ -5,10 +5,7 @@ import models.Account;
 import models.AccountInfo;
 import models.Transaction;
 import models.User;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -22,6 +19,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 
+@Ignore
 public class BankRPCTest {
     private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
     private static final List<String> HOSTS = Arrays.asList(RABBITMQ_HOSTNAME, "localhost");

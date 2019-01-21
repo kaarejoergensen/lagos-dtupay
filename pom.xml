@@ -143,6 +143,7 @@
                             <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
                         </buildArgs>
                         <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                        <pullNewerImage>true</pullNewerImage>
                     </configuration>
                 </plugin>
                 <plugin>

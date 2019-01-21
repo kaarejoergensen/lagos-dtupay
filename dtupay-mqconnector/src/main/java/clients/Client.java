@@ -24,4 +24,8 @@ public abstract class Client {
     public Client(List<String> hosts, String queue, String username, String password) throws IOException, TimeoutException {
         rpcClient = new RPCClient(hosts, queue, username, password);
     }
+
+    public Client(List<String> hosts, String queue, String username, String password, int port) throws IOException, TimeoutException {
+        rpcClient = new RPCClient(hosts, queue, username, password, port);
+    }
 }

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.rabbitmq.client.*;
-import com.rabbitmq.client.impl.DefaultCredentialsProvider;
-import cucumber.runtime.Timeout;
 import utils.JSONMapper;
 
 import java.io.IOException;
@@ -32,12 +30,17 @@ public abstract class RPCServer {
     }
 
     public void run(List<String> hosts, String queueName, String username, String password) throws IOException, TimeoutException {
+        this.run(hosts, queueName, username, password, -1);
+    }
+
+    public void run(List<String> hosts, String queueName, String username, String password, int port) throws IOException, TimeoutException {
         if (hosts == null || hosts.isEmpty() || queueName == null)
             throw new IllegalArgumentException("No arguments can be null or empty");
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(username);
         factory.setPassword(password);
+        factory.setPort(port);
         boolean connectionSuccess = false;
         for (int numberOfTries = 12; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
             for (String host : hosts) {
