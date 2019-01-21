@@ -23,7 +23,7 @@ public class RestApplication extends Application {
         try {
             merchantEndpoint.setRabbitMQInfo(rabbitHost, rabbitUsername, rabbitPassword);
         } catch (IOException | TimeoutException e) {
-            System.err.println("Failed creating customerEndpoint");
+            System.err.println("Failed creating merchantEndpoint");
             return Collections.emptySet();
         }
         Set<Object> set = new HashSet<>();

@@ -12,9 +12,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
@@ -36,6 +34,8 @@ public class CustomerEndpoint {
 	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
 
     public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
+        if (host == null || username == null || password == null)
+            throw new IllegalArgumentException("No arguments can be null!");
         this.tokenClient = new TokenClient(host, username, password);
         this.bankClient = new BankClient(host, username, password);
     }
