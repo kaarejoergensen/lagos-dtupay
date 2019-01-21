@@ -7,6 +7,7 @@ import tokens.TokenProvider;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 public class Server extends RPCServer {
@@ -53,6 +54,9 @@ public class Server extends RPCServer {
                 tokenProvider.reset();
                 result = true;
                 break;
+            case getUserIdFromToken:
+                Optional<String> userId = tokenProvider.getUserIdFromToken(arguments[1]);
+                return userId.orElseGet(() -> this.error("Token not valid"));
             default:
                 return this.error("No method found: " + method);
         }

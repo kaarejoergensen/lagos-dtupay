@@ -60,6 +60,11 @@ public class TokenProvider {
         this.datastore.reset();
     }
 
+    public Optional<String> getUserIdFromToken(String token) {
+        Optional<Jws<Claims>> claims = this.checkToken(token);
+        return claims.map(this::getUserId);
+    }
+
     private String issueToken(String userName, String userId, String UUID) {
         LocalDateTime expiration = LocalDateTime.now().plusDays(7);
         Date out = Date.from(expiration.atZone(ZoneId.systemDefault()).toInstant());

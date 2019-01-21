@@ -16,3 +16,12 @@ Add
 -Dmaven.test.skip=true
 ```
 if you're in a hurry.
+
+In order to run the RPC tests, start a RabbitMQ broker and mongo db:
+```
+docker run --hostname rabbit1 -p 5672:5672 --name testRabbitmq -d rabbitmq
+```
+and
+```
+docker run -p 27017:27017 --name testMongo -d mongo
+```

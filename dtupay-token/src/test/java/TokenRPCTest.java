@@ -57,6 +57,7 @@ public class TokenRPCTest {
         assertThat(tokens.size(), is(5));
         for (String token : tokens) {
             assertThat(tokenClient.useToken(token), is(true));
+            assertThat(tokenClient.getUserIdFromToken(token), is(this.userId));
         }
     }
 
