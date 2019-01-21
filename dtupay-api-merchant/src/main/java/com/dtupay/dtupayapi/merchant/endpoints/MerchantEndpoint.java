@@ -30,10 +30,12 @@ public class MerchantEndpoint {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response payment(@QueryParam("token") String token,
+                            @QueryParam("merchid") String merchid,
                             @QueryParam("price") BigDecimal price,
                             @QueryParam("description") String description) {
         try {
-            bankClient.transferMoneyFromTo("", "", price, description);
+            String userid = tokenClient.getUserIdFromToken(token);
+            bankClient.transferMoneyFromTo(userid, merchid, price, description);
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
