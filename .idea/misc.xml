@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< HEAD
-=======
+
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/dtupay-api" />
@@ -9,13 +8,11 @@
     <file type="web" url="file://$PROJECT_DIR$/dtupay-api-manager" />
     <file type="web" url="file://$PROJECT_DIR$/dtupay-api-merchant" />
   </component>
->>>>>>> 0afd6b93b49421d57ec27bfe90dc0f9845cb8887
+
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-<<<<<<< HEAD
-=======
         <option value="$PROJECT_DIR$/dtupaybarcode/pom.xml" />
         <option value="$PROJECT_DIR$/dtupayrestserver/pom.xml" />
         <option value="$PROJECT_DIR$/dtupayengine/pom.xml" />
@@ -23,7 +20,6 @@
         <option value="$PROJECT_DIR$/dtupay-mqconnector/pom.xml" />
         <option value="$PROJECT_DIR$/dtupay-api-merchant/pom.xml" />
         <option value="$PROJECT_DIR$/dtupay-api-manager/pom.xml" />
->>>>>>> 0afd6b93b49421d57ec27bfe90dc0f9845cb8887
       </list>
     </option>
   </component>
