@@ -6,6 +6,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import persistence.Datastore;
 import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
@@ -97,6 +99,70 @@ public class IssueToken {
         assertThat(tokenProvider.useToken(tokens.iterator().next() + this.userId), is(false));
     }
 
+
+    /*
+    Scenario 3 - MongoDb
+     */
+
+    @Given("^mongo datastore plus the standard username \"([^\"]*)\", userId \"([^\"]*)\" and \"([^\"]*)\" number of tokens$")
+    public void mongo_given_username_id_nrtokens(String username, String userid, int nrOfTokens ) throws IOException {
+        this.userName = username;
+        this.userId = userid;
+        this.numberOfTokens = nrOfTokens;
+        datastore = new MongoDataStore("localhost");
+        tokenProvider = new TokenProvider(datastore);
+    }
+
+    @When("^providing tokens with mongo datastore$")
+    public void mongo_tokenprovider_get() {
+        tokens = this.tokenProvider.getTokens(this.userName, this.userId, this.numberOfTokens);
+    }
+
+    @Then("^tokens is not null$")
+    public void tokens_is_not_null_mongo(){
+        assertThat(tokens, is(notNullValue()));
+    }
+
+    @Then("^size is \"([^\"]*)\"$")
+    public void size_is_correct_mongo(int expectedSize) {
+        assertEquals(tokens.size(), expectedSize);
+    }
+
+    @Then("^number of unused tokens is \"([^\"]*)\"$")
+    public void unused_count_correct_mongo(int expectedSize) {
+        assertThat(datastore.getNumberOfUnusedTokens(this.userId), is(expectedSize));
+    }
+
+    @Then("^able to use token$")
+    public void use_token_mongo(){
+        assertThat(tokenProvider.useToken(tokens.iterator().next()), is(true));
+    }
+
+    @Then("^the new number of unused tokens is \"([^\"]*)\"$")
+    public void unused_count_correct2_mongo(int expectedSize) {
+        assertThat(datastore.getNumberOfUnusedTokens(this.userId), is(expectedSize));
+    }
+
+    @Then("^not able to use tokens$")
+    public void not_use_token_mongo(){
+        assertThat(tokenProvider.useToken(tokens.iterator().next()), is(false));
+    }
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+    @Then("^requesting more than five tokens results in exception$")
+    public void request_more_five_mongo(){
+        expectedEx.expect(IllegalArgumentException.class);
+        tokenProvider.getTokens(this.userName, this.userId, 6);
+    }
+
+
+    @Then("^requesting zero tokens results in exception$")
+    public void request_zero_mongo(){
+        expectedEx.expect(IllegalArgumentException.class);
+        tokenProvider.getTokens(this.userName, this.userId, 0);
+    }
 
 
 
