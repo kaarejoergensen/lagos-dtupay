@@ -3,6 +3,7 @@ package com.dtupay.dtupayapi.customer.endpoints;
 
 import clients.BankClient;
 import clients.TokenClient;
+import com.dtupay.dtupayapi.customer.application.CustomerUtils;
 import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -10,6 +11,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
+import models.Transaction;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.*;
@@ -19,8 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -29,8 +33,8 @@ import java.util.concurrent.TimeoutException;
 public class CustomerEndpoint {
     private TokenClient tokenClient;
     private BankClient bankClient;
+    private CustomerUtils utils;
 
-    private final int QR_SIZE = 300;
 	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
 
     public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
@@ -38,84 +42,54 @@ public class CustomerEndpoint {
             throw new IllegalArgumentException("No arguments can be null!");
         this.tokenClient = new TokenClient(host, username, password);
         this.bankClient = new BankClient(host, username, password);
+        utils = new CustomerUtils(tokenClient, bankClient);
     }
 
-
-    private final String IMAGE_DIR = "/images/";
-    private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
-        String directory = System.getProperty("user.dir") + IMAGE_DIR;
-
-        java.nio.file.Path directoryPath = FileSystems.getDefault().getPath(directory);
-        if (Files.notExists(directoryPath)) Files.createDirectory(directoryPath);
-        java.nio.file.Path path;
-        String randomString;
-        do {
-            randomString = RandomStringUtils.randomAlphabetic(10);
-            path = FileSystems.getDefault().getPath(directory + randomString + ".png");
-        } while (Files.exists(path));
-
-        MatrixToImageWriter.writeToPath(qrMatrix, "PNG", path);
-        return "/v1/tokens/barcode/" + randomString + ".png";
-    }
 
 	@POST
     @Path("/requestTokens")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response requestTokens(@QueryParam("name") String username,
-                          @QueryParam("uid") String userId,
-                          @QueryParam("count") int number) {
+    public Response requestTokens( @QueryParam("name") String username, @QueryParam("uid") String userId, @QueryParam("count") int number) {
 		try {
-            ArrayList<String> tokenString = new ArrayList<>();//this.barcodeProvider.getTokens(username, userId, number);
-            Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
-
-            for (String string : tokenString) {
-                QRCodeWriter qrCodeWriter = new QRCodeWriter();
-                try {
-                    BitMatrix bitMatrix = qrCodeWriter.encode(string, BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
-                    finalTokens.add(new TokenBarcodePathPair(string, saveQRToDisk(bitMatrix)));
-                } catch (WriterException e) {
-                    //throw new QRException(e.getMessage(), e);
-                }
-            }
-
+            Set<TokenBarcodePathPair> finalTokens = utils.requestTokens(username, userId, number);
             return Response.ok(finalTokens).build();
         }catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught exception").build();
         }catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Caught exception").build();
+        } catch (ClientException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
+        } catch (WriterException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         }
-	}
-
-
-
-
-    @POST
-    public Response useToken(@HeaderParam(value = "Authorization") String token) {
-        boolean success;
-        try {
-            success = true;//this.barcodeProvider.useToken(token);
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-        if (success)
-            return Response.status(Response.Status.OK).build();
-        else
-            return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-	@GET
+    @GET
     @Path("/barcode/{fileName}")
     public Response getBarcode(@PathParam("fileName") String fileName) {
-        String path = System.getProperty("user.dir") + IMAGE_DIR + fileName;
-        Path filePath = (Path) FileSystems.getDefault().getPath(path);
-        File temp = new File(String.valueOf(filePath));
+        return utils.getBarcode(fileName);
+    }
 
-        if(temp.exists()){
-			return Response.status(Response.Status.OK).header("content-disposition",
-					"attachment; filename=\"" + fileName + "\"").build();
-		} else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("File not found").build();
+
+    /*
+        Requires the date format 'dd-MM-yyyy'
+     */
+    @GET
+    @Path("/transactions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransactions(String userId, String fromDate, String toDate){
+        try{
+            List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
+            return Response.ok(transactions).build();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (ClientException e) {
+            e.printStackTrace();
         }
     }
+
+
+
+
 
 }

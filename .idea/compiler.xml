@@ -24,8 +24,7 @@
       <module name="dtupay-token" target="1.8" />
     </bytecodeTargetLevel>
   </component>
-<<<<<<< HEAD
-=======
+
 
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -36,5 +35,4 @@
     </option>
   </component>
 
->>>>>>> e1466c2f68af43b51d7b95d1526890456f82db35
 </project>

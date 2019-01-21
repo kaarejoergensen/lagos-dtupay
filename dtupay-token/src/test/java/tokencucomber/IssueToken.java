@@ -108,7 +108,7 @@ public class IssueToken {
         this.userName = username;
         this.userId = userid;
         this.numberOfTokens = nrOfTokens;
-        datastore = new MongoDataStore(MONGO_HOSTS);
+        datastore = new MongoDataStore("localhost");
         tokenProvider = new TokenProvider(datastore);
     }
 
