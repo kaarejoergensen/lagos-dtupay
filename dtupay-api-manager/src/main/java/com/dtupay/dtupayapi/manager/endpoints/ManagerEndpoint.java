@@ -24,6 +24,8 @@ public class ManagerEndpoint {
     private BankClient bankClient;
 
     public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
+        if (host == null || username == null || password == null)
+            throw new IllegalArgumentException("No arguments can be null!");
         this.tokenClient = new TokenClient(host, username, password);
         this.bankClient = new BankClient(host, username, password);
     }

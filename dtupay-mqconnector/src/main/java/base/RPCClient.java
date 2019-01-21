@@ -71,7 +71,7 @@ public class RPCClient implements AutoCloseable {
     }
 
     public String call(String... arguments) throws IOException, InterruptedException, ClientException {
-        System.out.println(" [ ] call: " + Arrays.toString(arguments));
+        System.out.println(" [ ] call: " + arguments[0]);
         final String corrId = UUID.randomUUID().toString();
         final String message = JSONMapper.arrayToJSON(arguments);
 
@@ -95,7 +95,7 @@ public class RPCClient implements AutoCloseable {
 
         String result = response.take();
         channel.basicCancel(ctag);
-        System.out.println(" [ ] received: " + result);
+        System.out.println(" [ ] received response");
         String error = JSONMapper.JSONToExceptionMessage(result);
         if (error != null)
             throw new ClientException(error);

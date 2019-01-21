@@ -83,9 +83,9 @@ public abstract class RPCServer {
 
                 try {
                     String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-                    System.out.println(" [x] Received message: " + message);
-                    response += this.implementation(JSONMapper.JSONToArray(message));
-                    System.out.println(" [x] Answering: " + response);
+                    String[] arguments = JSONMapper.JSONToArray(message);
+                    System.out.println(" [x] Received call: " + arguments[0]);
+                    response += this.implementation(arguments);
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                 } finally {
