@@ -14,7 +14,9 @@ import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -23,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class IssueToken {
+    private static final List<String> MONGO_HOSTS = Arrays.asList("localhost", "mongo");
 
     private String userName;
     private String userId;
@@ -109,7 +112,7 @@ public class IssueToken {
         this.userName = username;
         this.userId = userid;
         this.numberOfTokens = nrOfTokens;
-        datastore = new MongoDataStore("localhost");
+        datastore = new MongoDataStore(MONGO_HOSTS);
         tokenProvider = new TokenProvider(datastore);
     }
 
