@@ -24,4 +24,17 @@
       <module name="dtupay-token" target="1.8" />
     </bytecodeTargetLevel>
   </component>
+<<<<<<< HEAD
+=======
+
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dtupay-api" options="" />
+      <module name="dtupay-api-customer" options="" />
+      <module name="dtupay-bank" options="" />
+      <module name="dtupay-token" options="" />
+    </option>
+  </component>
+
+>>>>>>> e1466c2f68af43b51d7b95d1526890456f82db35
 </project>

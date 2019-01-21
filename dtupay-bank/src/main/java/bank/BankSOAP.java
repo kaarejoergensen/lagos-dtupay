@@ -48,4 +48,19 @@ public class BankSOAP implements Bank {
     public void transferMoneyFromTo(String fromAccountId, String toAccountId, BigDecimal amount, String description) throws BankServiceException_Exception {
         bankService.transferMoneyFromTo(fromAccountId, toAccountId, amount, description);
     }
+
+    @Override
+    public Boolean accountExists(String cpr){
+        Boolean result = false;
+        try {
+            Account tempAccount = getAccountByCprNumber(cpr);
+            result = true;
+        } finally {
+            return result;
+        }
+
+
+    }
+
+
 }

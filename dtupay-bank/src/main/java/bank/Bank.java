@@ -20,4 +20,7 @@ public interface Bank {
     void retireAccount(String id) throws BankServiceException_Exception;
 
     void transferMoneyFromTo(String fromAccountId, String toAccountId, BigDecimal amount, String description) throws BankServiceException_Exception;
+
+    Boolean accountExists(String cpr);
+
 }

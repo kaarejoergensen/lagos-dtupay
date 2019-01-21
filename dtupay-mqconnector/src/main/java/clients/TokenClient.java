@@ -2,6 +2,7 @@ package clients;
 
 import base.Method.Token;
 import base.RPCClient;
+import cucumber.api.java.sl.In;
 import exceptions.ClientException;
 import utils.JSONMapper;
 
@@ -62,6 +63,14 @@ public class TokenClient extends Client {
         try {
             String result = this.rpcClient.call(Token.reset.toString());
             return JSONMapper.JSONToBoolean(result);
+        } catch (IOException | InterruptedException e) {
+            throw new ClientException(e.getMessage(), e);
+        }
+    }
+
+    public String getUserIdFromToken(String token) throws ClientException {
+        try {
+            return this.rpcClient.call(Token.getUserIdFromToken.toString(), token);
         } catch (IOException | InterruptedException e) {
             throw new ClientException(e.getMessage(), e);
         }

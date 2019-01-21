@@ -4,7 +4,8 @@ public class Method {
     public enum Token {
         getTokens,
         useToken,
-        reset
+        reset,
+        getUserIdFromToken
     }
 
     public enum Bank {
