@@ -1,6 +1,6 @@
 node {
     checkout scm
-    docker.image('maven:3-alpine').inside('-v /root/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home/workspace:/var/jenkins_home/workspace --network jenkinsnet') {
+    docker.image('maven:3-alpine').inside('-v /root/.m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock --network jenkinsnet') {
         stage('Build') {
             sh 'mvn clean compile'
         }
