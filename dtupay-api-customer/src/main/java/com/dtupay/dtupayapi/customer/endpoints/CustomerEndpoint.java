@@ -65,9 +65,12 @@ public class CustomerEndpoint {
     @GET
     @Path("/barcode/{fileName}")
     public Response getBarcode(@PathParam("fileName") String fileName) {
-        return utils.getBarcode(fileName);
+        if (fileName == "hello") {
+            return Response.ok("Hello from the other side").build();
+        }else{
+            return utils.getBarcodeImage(fileName);
+        }
     }
-
 
     /*
         Requires the date format 'dd-MM-yyyy'
@@ -76,7 +79,9 @@ public class CustomerEndpoint {
     @GET
     @Path("/transactions")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTransactions(String userId, String fromDate, String toDate){
+    public Response getTransactions(@QueryParam("userId") String userId,
+                                    @QueryParam("from") String fromDate,
+                                    @QueryParam("to") String toDate){
         try{
             List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
             return Response.ok(transactions).build();

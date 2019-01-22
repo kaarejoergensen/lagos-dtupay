@@ -30,7 +30,7 @@ public class CustomerUtils {
     Help class for the customer endpoint for more easy testing of the functinality of the method itself
      */
 
-
+    private final String IMAGE_DIR = "/images/";
     private final int QR_SIZE = 300;
     private TokenClient tokenClient;
     private BankClient bankClient;
@@ -64,7 +64,6 @@ public class CustomerUtils {
         }
     }
 
-    private final String IMAGE_DIR = "/images/";
     private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
         String directory = System.getProperty("user.dir") + IMAGE_DIR;
 
@@ -78,14 +77,13 @@ public class CustomerUtils {
         } while (Files.exists(path));
 
         MatrixToImageWriter.writeToPath(qrMatrix, "PNG", path);
-        return directory + "/" + path.toString();
+        return "/v1/customer/barcode/" + randomString + ".png";
     }
 
-    public Response getBarcode(String filename){
+    public Response getBarcodeImage(String filename){
         String path = System.getProperty("user.dir") + IMAGE_DIR + filename;
         Path filePath = (Path) FileSystems.getDefault().getPath(path);
         File temp = new File(String.valueOf(filePath));
-
         if(temp.exists()){
             return Response.status(Response.Status.OK).header("content-disposition",
                     "attachment; filename=\"" + filename + "\"").build();
