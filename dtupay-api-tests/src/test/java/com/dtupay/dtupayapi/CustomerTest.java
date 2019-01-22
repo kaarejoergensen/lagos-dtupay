@@ -12,7 +12,7 @@ import org.testcontainers.shaded.javax.ws.rs.client.WebTarget;
 import java.io.File;
 
 @Ignore
-public class CustomerTest {
+public class  CustomerTest {
 
     @ClassRule
     public static DockerComposeContainer environment =
