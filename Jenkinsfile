@@ -11,7 +11,7 @@ node {
             sh "mvn package -Dbuild.number=${env.BUILD_NUMBER} -Dmaven.test.skip=true"
         }
         stage('Integration test') {
-            sh "mvn verify -Ddockerfile.skip=true -DintegrationTestOnly=true
+            sh "mvn verify -Ddockerfile.skip=true -DintegrationTestOnly=true"
         }
         stage('Push docker images') {
             if (env.BRANCH_NAME == 'master') {
