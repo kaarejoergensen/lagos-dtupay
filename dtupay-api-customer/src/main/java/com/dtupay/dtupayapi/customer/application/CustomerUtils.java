@@ -42,7 +42,16 @@ public class CustomerUtils {
     }
 
 
-    public  Set<TokenBarcodePathPair> requestTokens(String username, String userId, int tokenCount) throws WriterException, IOException, ClientException{
+    public  Set<TokenBarcodePathPair> requestTokens(String username,
+                                                    String userId,
+                                                    int tokenCount) throws WriterException, IOException, ClientException{
+        try {
+            if (this.bankClient.getAccount(userId) == null) {
+                throw new IllegalArgumentException("User could not be found.");
+            }
+        } catch (ClientException e) {
+            throw new IllegalArgumentException("User could not be found.");
+        }
         try {
             Set<String> s = tokenClient.getTokens(username, userId, tokenCount);
             Set<TokenBarcodePathPair> finalTokens = new HashSet<>();

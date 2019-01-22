@@ -12,6 +12,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
 import models.Transaction;
+import models.User;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.*;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.text.ParseException;
@@ -47,6 +49,23 @@ public class CustomerEndpoint {
 
 
 	@POST
+    @Path("/createUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(@QueryParam("username") String username,
+                               @QueryParam("cprNumber") String cprNumber,
+                               @QueryParam("firstName") String firstName,
+                               @QueryParam("lastName") String lastName) {
+        User user = new User(cprNumber, firstName, lastName);
+
+        try {
+            String userId = this.bankClient.createAccountWithBalance(user, new BigDecimal(1000));
+            return Response.status(Response.Status.OK).entity(userId).build();
+        } catch (ClientException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
     @Path("/requestTokens")
     @Produces(MediaType.APPLICATION_JSON)
     public Response requestTokens( @QueryParam("name") String username, @QueryParam("uid") String userId, @QueryParam("count") int number) {
