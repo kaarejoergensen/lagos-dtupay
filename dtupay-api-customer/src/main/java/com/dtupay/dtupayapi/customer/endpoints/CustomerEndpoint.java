@@ -5,27 +5,17 @@ import clients.BankClient;
 import clients.TokenClient;
 import com.dtupay.dtupayapi.customer.application.CustomerUtils;
 import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
 import models.Transaction;
 import models.User;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -108,8 +98,10 @@ public class CustomerEndpoint {
         }
     }
 
-
-
-
-
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("You did it!!!!").build();
+    }
 }
