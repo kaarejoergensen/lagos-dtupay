@@ -9,12 +9,12 @@ node {
         }
         stage('Create docker images') {
             if (env.BRANCH_NAME != 'master') {
-                sh "mvn package -Dbuild.number=${env.BUILD_NUMBER} -Dmaven.test.skip=true"
+                sh "mvn package -Dbuild.number=${env.BUILD_NUMBER} -DintegrationTestOnly=true"
             }
         }
         stage('Create and push docker images') {
             if (env.BRANCH_NAME == 'master') {
-                sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER} -Dmaven.test.skip=true"
+                sh "mvn deploy -s settings.xml -Dbuild.number=${env.BUILD_NUMBER} -DintegrationTestOnly=true"
             }
         }
     }

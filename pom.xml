@@ -207,4 +207,28 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>integrationTestOnly</id>
+            <activation>
+                <property>
+                    <name>integrationTestOnly</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.0.0-M3</version>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
