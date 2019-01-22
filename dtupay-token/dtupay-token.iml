@@ -19,19 +19,19 @@
     <orderEntry type="library" scope="TEST" name="Maven: info.cukes:cucumber-html:0.2.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:cucumber-jvm-deps:1.0.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:tag-expressions:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:3.9.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:cucumber-junit:2.3.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
     <orderEntry type="module" module-name="dtupay-mqconnector" />
+    <orderEntry type="library" name="Maven: com.rabbitmq:amqp-client:5.5.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:cucumber-picocontainer:4.2.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:gherkin:5.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.picocontainer:picocontainer:2.15" level="project" />
-    <orderEntry type="library" name="Maven: com.rabbitmq:amqp-client:5.5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.8" level="project" />
+    <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
   </component>
 </module>

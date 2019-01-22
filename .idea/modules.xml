@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/dtupay.iml" filepath="$PROJECT_DIR$/dtupay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dtupay-api-customer/dtupay-api-customer.iml" filepath="$PROJECT_DIR$/dtupay-api-customer/dtupay-api-customer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dtupay-api-manager/dtupay-api-manager.iml" filepath="$PROJECT_DIR$/dtupay-api-manager/dtupay-api-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dtupay-api-merchant/dtupay-api-merchant.iml" filepath="$PROJECT_DIR$/dtupay-api-merchant/dtupay-api-merchant.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-bank/dtupay-bank.iml" filepath="$PROJECT_DIR$/dtupay-bank/dtupay-bank.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dtupay-customer-rest-api/dtupay-customer-rest-api.iml" filepath="$PROJECT_DIR$/dtupay-customer-rest-api/dtupay-customer-rest-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-mqconnector/dtupay-mqconnector.iml" filepath="$PROJECT_DIR$/dtupay-mqconnector/dtupay-mqconnector.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-token/dtupay-token.iml" filepath="$PROJECT_DIR$/dtupay-token/dtupay-token.iml" />
     </modules>
