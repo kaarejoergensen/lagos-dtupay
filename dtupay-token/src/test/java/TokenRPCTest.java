@@ -1,18 +1,14 @@
 import base.RPCServer;
 import clients.TokenClient;
 import exceptions.ClientException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import persistence.Datastore;
-import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
@@ -21,27 +17,34 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class TokenRPCTest {
-    private static final String RABBITMQ_HOSTNAME = "rabbitmq";     // Should always be "rabbitmq" for jenkins.
-    private static final List<String> RABBITMQ_HOSTS = Arrays.asList(RABBITMQ_HOSTNAME, "localhost");
-    private static final String MONGO_HOSTNAME = "mongo";           // Should always be "mongo" for jenkins.
-    private static final List<String> MONGO_HOSTS = Arrays.asList(MONGO_HOSTNAME, "localhost");
-
     private String userName = "core";
     private String userId = "1234";
     private TokenClient tokenClient;
 
     public TokenRPCTest() throws TimeoutException, IOException {
-        tokenClient = new TokenClient(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
+        tokenClient = new TokenClient(rabbitmq.getContainerIpAddress(), Server.RPC_QUEUE_NAME + "-test",
+                    "rabbitmq", "rabbitmq", rabbitmq.getFirstMappedPort());
     }
+
+    @ClassRule
+    public static GenericContainer mongo = new GenericContainer<>("mongo").withExposedPorts(27017)
+            .waitingFor(Wait.forLogMessage(".*waiting for connections on port 27017.*", 1));
+
+    @ClassRule
+    public static GenericContainer rabbitmq = new GenericContainer<>("rabbitmq").withExposedPorts(5672)
+            .withEnv("RABBITMQ_DEFAULT_USER", "rabbitmq").withEnv("RABBITMQ_DEFAULT_PASS", "rabbitmq")
+            .waitingFor(Wait.forLogMessage(".*Server startup complete.*", 1));
 
     @BeforeClass
     public static void initServer() throws IOException {
-        TokenProvider tokenProvider = new TokenProvider(new MongoDataStore(MONGO_HOSTS));
+        Datastore datastore = new MongoDataStore(mongo.getContainerIpAddress(), mongo.getFirstMappedPort());
+        TokenProvider tokenProvider = new TokenProvider(datastore);
         RPCServer rpcServer = new Server(tokenProvider);
         System.out.println("Starting server");
         new Thread(() -> {
             try {
-                rpcServer.run(RABBITMQ_HOSTS, Server.RPC_QUEUE_NAME + "-test", "rabbitmq", "rabbitmq");
+                rpcServer.run(rabbitmq.getContainerIpAddress(),Server.RPC_QUEUE_NAME + "-test",
+                        "rabbitmq", "rabbitmq", rabbitmq.getFirstMappedPort());
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
                 Assert.fail();

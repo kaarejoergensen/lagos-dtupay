@@ -3,6 +3,7 @@ package com.dtupay.dtupayapi.merchant.endpoints;
 
 import clients.BankClient;
 import clients.TokenClient;
+import exceptions.ClientException;
 import models.Transaction;
 
 import javax.ws.rs.*;
@@ -38,8 +39,13 @@ public class MerchantEndpoint {
         try {
             String userid = tokenClient.getUserIdFromToken(token);
             bankClient.transferMoneyFromTo(userid, merchid, price, description);
-        } catch (Exception e) {
+        } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        try {
+            tokenClient.useToken(token);
+        } catch (ClientException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
         return Response.status(Response.Status.OK).build();

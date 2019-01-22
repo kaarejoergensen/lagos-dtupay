@@ -14,6 +14,7 @@
         <module>dtupay-api-customer</module>
         <module>dtupay-api-merchant</module>
         <module>dtupay-api-manager</module>
+        <module>dtupay-api-tests</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -80,6 +81,13 @@
             <version>1.18.4</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.10.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -143,6 +151,7 @@
                             <JAR_FILE>target/${project.artifactId}-${project.version}-thorntail.jar</JAR_FILE>
                         </buildArgs>
                         <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                        <pullNewerImage>true</pullNewerImage>
                     </configuration>
                 </plugin>
                 <plugin>
