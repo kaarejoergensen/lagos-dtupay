@@ -35,7 +35,6 @@ public class CustomerEndpoint {
     private BankClient bankClient;
     private CustomerUtils utils;
 
-	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
 
     public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
         if (host == null || username == null || password == null)
@@ -44,7 +43,6 @@ public class CustomerEndpoint {
         this.bankClient = new BankClient(host, username, password);
         utils = new CustomerUtils(tokenClient, bankClient);
     }
-
 
 	@POST
     @Path("/requestTokens")
@@ -74,7 +72,7 @@ public class CustomerEndpoint {
     /*
         Requires the date format 'dd-MM-yyyy'
      */
-    
+
     @GET
     @Path("/transactions")
     @Produces(MediaType.APPLICATION_JSON)

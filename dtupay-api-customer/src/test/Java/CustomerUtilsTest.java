@@ -16,15 +16,7 @@ public class CustomerUtilsTest {
 
     @Test
     public void requestTokens(){
-        TokenClient tokenClient = null;
-        try {
-            tokenClient = new TokenClient("localhost", "rabbitmq","rabbitmq");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        CustomerUtils cu = new CustomerUtils(tokenClient);
+        
 
     }
 
