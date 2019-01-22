@@ -14,6 +14,7 @@
         <module>dtupay-api-customer</module>
         <module>dtupay-api-merchant</module>
         <module>dtupay-api-manager</module>
+        <module>dtupay-api-tests</module>
     </modules>
     <packaging>pom</packaging>
 
