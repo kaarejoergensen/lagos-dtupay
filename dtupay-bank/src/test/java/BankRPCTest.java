@@ -6,8 +6,7 @@ import models.AccountInfo;
 import models.Transaction;
 import models.User;
 import org.junit.*;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
+
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -20,7 +19,17 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 
+
+
 public class BankRPCTest {
+
+
+    public static void main(String args[]){
+
+    }
+
+
+    /*
     private BankClient bank;
     private List<String> createdAccounts;
 
@@ -210,4 +219,5 @@ public class BankRPCTest {
         }
         this.createdAccounts.clear();
     }
+    */
 }

@@ -9,7 +9,6 @@
         <module name="dtupay-api-customer" />
         <module name="dtupay-api-manager" />
         <module name="dtupay-api-merchant" />
-        <module name="dtupay-api-tests" />
         <module name="dtupay-bank" />
         <module name="dtupay-mqconnector" />
         <module name="dtupay-token" />
@@ -20,10 +19,17 @@
       <module name="dtupay-api-customer" target="1.8" />
       <module name="dtupay-api-manager" target="1.8" />
       <module name="dtupay-api-merchant" target="1.8" />
-      <module name="dtupay-api-tests" target="1.8" />
       <module name="dtupay-bank" target="1.8" />
       <module name="dtupay-mqconnector" target="1.8" />
       <module name="dtupay-token" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dtupay-api" options="" />
+      <module name="dtupay-api-customer" options="" />
+      <module name="dtupay-bank" options="" />
+      <module name="dtupay-token" options="" />
+    </option>
   </component>
 </project>

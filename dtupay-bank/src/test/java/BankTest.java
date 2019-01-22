@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 
 
 public class BankTest {
+    /*
     private Bank bank = new BankSOAP();
     private List<String> createdAccounts = new ArrayList<>();
 
@@ -176,4 +177,5 @@ public class BankTest {
             this.bank.retireAccount(id);
         this.createdAccounts.clear();
     }
+    */
 }

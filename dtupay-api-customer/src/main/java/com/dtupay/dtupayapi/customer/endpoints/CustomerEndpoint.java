@@ -27,7 +27,6 @@ public class CustomerEndpoint {
     private BankClient bankClient;
     private CustomerUtils utils;
 
-	//private BarcodeProvider barcodeProvider = new BarcodeProvider();
 
     public void setRabbitMQInfo(String host, String username, String password) throws IOException, TimeoutException {
         if (host == null || username == null || password == null)
@@ -36,7 +35,6 @@ public class CustomerEndpoint {
         this.bankClient = new BankClient(host, username, password);
         utils = new CustomerUtils(tokenClient, bankClient);
     }
-
 
 	@POST
     @Path("/createUser")
@@ -76,9 +74,12 @@ public class CustomerEndpoint {
     @GET
     @Path("/barcode/{fileName}")
     public Response getBarcode(@PathParam("fileName") String fileName) {
-        return utils.getBarcode(fileName);
+        if (fileName == "hello") {
+            return Response.ok("Hello from the other side").build();
+        }else{
+            return utils.getBarcodeImage(fileName);
+        }
     }
-
 
     /*
         Requires the date format 'dd-MM-yyyy'
@@ -87,7 +88,9 @@ public class CustomerEndpoint {
     @GET
     @Path("/transactions")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTransactions(String userId, String fromDate, String toDate){
+    public Response getTransactions(@QueryParam("userId") String userId,
+                                    @QueryParam("from") String fromDate,
+                                    @QueryParam("to") String toDate){
         try{
             List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
             return Response.ok(transactions).build();
