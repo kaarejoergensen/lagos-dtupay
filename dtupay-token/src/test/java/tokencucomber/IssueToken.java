@@ -1,18 +1,19 @@
 package tokencucomber;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import persistence.Datastore;
 import persistence.MemoryDataStore;
 import persistence.MongoDataStore;
 import tokens.TokenProvider;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -21,8 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class IssueToken {
-    private static final List<String> MONGO_HOSTS = Arrays.asList("localhost", "mongo");
-
     private String userName;
     private String userId;
 
@@ -32,6 +31,25 @@ public class IssueToken {
     private TokenProvider tokenProvider;
 
     private Set<String> tokens;
+    private GenericContainer mongo = new GenericContainer<>("mongo").
+            withExposedPorts(27017)
+            .waitingFor(Wait.forLogMessage(".*waiting for connections on port 27017.*", 1));
+    private String mongoIp;
+    private int mongoPort;
+
+    @Before
+    public void initMongo() {
+        mongo.start();
+        this.mongoIp = mongo.getContainerIpAddress();
+        this.mongoPort = mongo.getFirstMappedPort();
+        System.out.println("Started mongo container");
+    }
+
+    @After
+    public void after() {
+        mongo.stop();
+        System.out.println("Started mongo container");
+    }
 
     @Given("^the user id, user name and the number of tokens$")
     public void the_user_id_name_numberOfTokens() {
@@ -104,11 +122,11 @@ public class IssueToken {
      */
 
     @Given("^mongo datastore plus the standard username \"([^\"]*)\", userId \"([^\"]*)\" and \"([^\"]*)\" number of tokens$")
-    public void mongo_given_username_id_nrtokens(String username, String userid, int nrOfTokens ) throws IOException {
+    public void mongo_given_username_id_nrtokens(String username, String userid, int nrOfTokens ) throws InterruptedException {
         this.userName = username;
         this.userId = userid;
         this.numberOfTokens = nrOfTokens;
-        datastore = new MongoDataStore("localhost");
+        datastore = new MongoDataStore(mongoIp, mongoPort);
         tokenProvider = new TokenProvider(datastore);
     }
 

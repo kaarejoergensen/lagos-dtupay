@@ -74,7 +74,7 @@ public class CustomerEndpoint {
     /*
         Requires the date format 'dd-MM-yyyy'
      */
-    
+
     @GET
     @Path("/transactions")
     @Produces(MediaType.APPLICATION_JSON)

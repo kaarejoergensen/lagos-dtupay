@@ -1,21 +1,20 @@
 package persistence;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.connection.ClusterSettings;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.bson.Document;
 import org.bson.types.Binary;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
+import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -23,30 +22,24 @@ public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;
 
     public MongoDataStore() throws IOException {
-        this(Collections.singletonList(ServerAddress.defaultHost()));
+        this(ServerAddress.defaultHost(),ServerAddress.defaultPort());
     }
 
     public MongoDataStore(String host) throws IOException {
-        this(Collections.singletonList(host));
+        this(host, ServerAddress.defaultPort());
     }
 
-    public MongoDataStore(List<String> hosts) throws IOException {
-        boolean connectionSuccess = false;
-        for (String host : hosts) {
-            try {
-                MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
-                MongoClient client = new MongoClient(new ServerAddress(host), mongoClientOptions);
-                mdb = client.getDatabase("dtupay");
-                this.reset();
-                System.err.println("Connection to mongo host '" + host + "' suceeded");
-                connectionSuccess = true;
-                break;
-            } catch (Exception e) {
-                System.err.println("Connection to mongo host '" + host + "' failed");
-            }
+    public MongoDataStore(String host, int port) {
+        try {
+            MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
+            MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
+            mdb = client.getDatabase("dtupay");
+            this.reset();
+            System.err.println("Connection to mongo host '" + host + "' suceeded");
+        } catch (Exception e) {
+            System.err.println("Connection to mongo host '" + host + "' failed");
+            throw new RuntimeException("No valid mongo host found in list [" + host + "]");
         }
-        if (!connectionSuccess)
-            throw new RuntimeException("No valid mongo host found in list [" + String.join(",", hosts) + "]");
     }
 
     @Override

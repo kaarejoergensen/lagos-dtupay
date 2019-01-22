@@ -9,58 +9,47 @@ import utils.JSONMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
 
-public class RPCClient implements AutoCloseable {
+public abstract class RPCClient implements AutoCloseable {
     private Connection connection;
     private Channel channel;
     private String queueName;
 
     public RPCClient(String host, String queueName) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), queueName);
-    }
-
-    public RPCClient(List<String> hosts, String queueName) throws IOException, TimeoutException {
-        this(hosts, queueName, new ConnectionFactory().getUsername(), new ConnectionFactory().getPassword());
+        this(host, queueName, new ConnectionFactory().getUsername(), new ConnectionFactory().getPassword());
     }
 
     public RPCClient(String host, String queueName, String username, String password) throws IOException, TimeoutException {
-        this(Collections.singletonList(host), queueName, username, password);
+        this(host, queueName, username, password, -1);
     }
 
-    public RPCClient(List<String> hosts, String queueName, String username, String password) throws IOException, TimeoutException {
-        if (hosts == null || hosts.isEmpty() || queueName == null)
+    public RPCClient(String host, String queueName, String username, String password, int port) throws IOException, TimeoutException {
+        if (host == null || queueName == null)
             throw new IllegalArgumentException("No arguments can be null or empty");
         this.queueName = queueName;
 
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(username);
         factory.setPassword(password);
+        factory.setHost(host);
+        factory.setPort(port);
         boolean connectionSuccess = false;
-        for (int numberOfTries = 12; numberOfTries > 0 && !connectionSuccess; numberOfTries--) {
-            for (String host : hosts) {
-                factory.setHost(host);
-                try {
-                    connection = factory.newConnection();
-                    connectionSuccess = true;
-                    System.out.println("Connection to " + host + " succeeded!");
-                    break;
-                } catch (IOException e) {
-                    System.err.println("Connection to " + host + " could not be established");
-                }
-            }
-            if (!connectionSuccess) {
-                System.err.println("Tried all hosts, sleeping 5 seconds");
+        for (int numberOfTries = 12; numberOfTries > 0; numberOfTries--) {
+            try {
+                connection = factory.newConnection();
+                connectionSuccess = true;
+                System.out.println("Connection to " + host + " succeeded!");
+                break;
+            } catch (IOException e) {
+                System.err.println("Connection to " + host + " could not be established, sleeping for 5 seconds");
                 try {
                     Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
                 }
             }
         }

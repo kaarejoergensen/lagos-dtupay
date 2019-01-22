@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/dtupay-api-customer/dtupay-api-customer.iml" filepath="$PROJECT_DIR$/dtupay-api-customer/dtupay-api-customer.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-api-manager/dtupay-api-manager.iml" filepath="$PROJECT_DIR$/dtupay-api-manager/dtupay-api-manager.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-api-merchant/dtupay-api-merchant.iml" filepath="$PROJECT_DIR$/dtupay-api-merchant/dtupay-api-merchant.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dtupay-api-tests/dtupay-api-tests.iml" filepath="$PROJECT_DIR$/dtupay-api-tests/dtupay-api-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-bank/dtupay-bank.iml" filepath="$PROJECT_DIR$/dtupay-bank/dtupay-bank.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-mqconnector/dtupay-mqconnector.iml" filepath="$PROJECT_DIR$/dtupay-mqconnector/dtupay-mqconnector.iml" />
       <module fileurl="file://$PROJECT_DIR$/dtupay-token/dtupay-token.iml" filepath="$PROJECT_DIR$/dtupay-token/dtupay-token.iml" />
