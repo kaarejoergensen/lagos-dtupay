@@ -40,6 +40,7 @@ public class MerchantEndpoint {
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+        
         try {
             tokenClient.useToken(token);
         } catch (ClientException e) {
