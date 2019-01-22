@@ -36,7 +36,7 @@ public class TokenRPCTest {
             .waitingFor(Wait.forLogMessage(".*Server startup complete.*", 1));
 
     @BeforeClass
-    public static void initServer() throws IOException {
+    public static void initServer() {
         Datastore datastore = new MongoDataStore(mongo.getContainerIpAddress(), mongo.getFirstMappedPort());
         TokenProvider tokenProvider = new TokenProvider(datastore);
         RPCServer rpcServer = new Server(tokenProvider);

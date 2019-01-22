@@ -5,25 +5,17 @@ import clients.BankClient;
 import clients.TokenClient;
 import com.dtupay.dtupayapi.customer.application.CustomerUtils;
 import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
 import models.Transaction;
-import org.apache.commons.lang3.RandomStringUtils;
+import models.User;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
+import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -45,6 +37,23 @@ public class CustomerEndpoint {
     }
 
 	@POST
+    @Path("/createUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(@QueryParam("username") String username,
+                               @QueryParam("cprNumber") String cprNumber,
+                               @QueryParam("firstName") String firstName,
+                               @QueryParam("lastName") String lastName) {
+        User user = new User(cprNumber, firstName, lastName);
+
+        try {
+            String userId = this.bankClient.createAccountWithBalance(user, new BigDecimal(1000));
+            return Response.status(Response.Status.OK).entity(userId).build();
+        } catch (ClientException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
     @Path("/requestTokens")
     @Produces(MediaType.APPLICATION_JSON)
     public Response requestTokens( @QueryParam("name") String username, @QueryParam("uid") String userId, @QueryParam("count") int number) {
@@ -92,8 +101,10 @@ public class CustomerEndpoint {
         }
     }
 
-
-
-
-
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("You did it!!!!").build();
+    }
 }

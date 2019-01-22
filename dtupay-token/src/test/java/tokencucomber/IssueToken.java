@@ -34,11 +34,12 @@ public class IssueToken {
     private GenericContainer mongo = new GenericContainer<>("mongo").
             withExposedPorts(27017)
             .waitingFor(Wait.forLogMessage(".*waiting for connections on port 27017.*", 1));
-    private String mongoIp;
+    private String mongoIp = null;
     private int mongoPort;
 
     @Before
     public void initMongo() {
+        if (this.mongoIp != null) return;
         mongo.start();
         this.mongoIp = mongo.getContainerIpAddress();
         this.mongoPort = mongo.getFirstMappedPort();
