@@ -8,6 +8,7 @@ import models.AccountInfo;
 import models.Transaction;
 import models.User;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,15 @@ public class ManagerUtils {
     public ManagerUtils(TokenClient tokenClient, BankClient bankclient){
         this.tokenClient = tokenClient;
         this.bankClient = bankclient;
+    }
+
+
+    /*
+        Check if user already have an account
+     */
+    public boolean createAccount(User user, BigDecimal initialBalannce) throws ClientException {
+        bankClient.getAccount(getUser())
+        bankClient.createAccountWithBalance(user,initialBalannce);
     }
 
     public UserModel getUser(String userID) throws ClientException {

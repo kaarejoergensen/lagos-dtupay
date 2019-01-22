@@ -32,6 +32,16 @@ public class ManagerEndpoint {
         utils = new ManagerUtils(tokenClient, bankClient);
     }
 
+    @POST
+    @Path("/createAccount")
+    public Response createAccount(){
+        return null;
+    }
+
+    /*
+
+     */
+
     @GET
     @Path("/users")
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,7 +55,7 @@ public class ManagerEndpoint {
     }
 
     /*
-    Getting user - fetching the user model and list of transactions
+        Getting user - fetching the user model and list of transactions
      */
 
     @GET
