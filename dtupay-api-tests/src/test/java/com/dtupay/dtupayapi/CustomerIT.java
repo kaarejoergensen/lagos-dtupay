@@ -1,11 +1,11 @@
 package com.dtupay.dtupayapi;
 
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-
+import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
+import gherkin.deps.com.google.gson.Gson;
+import gherkin.deps.com.google.gson.reflect.TypeToken;
+import models.Transaction;
+import org.junit.*;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -20,13 +20,17 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Kåre
  */
 public class CustomerIT {
-    private static final String COMPOSE_FILE_LOCATION = "/src/test/resources/compose-test.yml";
+    private static final int REST_PORT = 8080;
 
     private static final String RABBIT_LOG_REGEX = ".*Server startup complete.*";
     private static final String MONGO_LOG_REGEX = ".*build index done.*";
