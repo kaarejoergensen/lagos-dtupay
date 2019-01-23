@@ -21,6 +21,10 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 
+/**
+    @author Jonathan
+*/
+
 @Path("/v1/customer")
 public class CustomerEndpoint {
     private TokenClient tokenClient;
