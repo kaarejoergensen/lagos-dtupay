@@ -7,7 +7,9 @@ import models.User;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+/**
+ * @author Kåre
+ */
 public interface Bank {
     String createAccountWithBalance(User user, BigDecimal balance) throws BankServiceException_Exception;
 

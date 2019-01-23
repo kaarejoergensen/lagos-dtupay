@@ -16,7 +16,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
-
+/**
+ * @author Kåre
+ */
 public class BankTest {
     /*
     private Bank bank = new BankSOAP();

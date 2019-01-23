@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @author Kåre
+ */
 public class Server extends RPCServer {
     static final String RPC_QUEUE_NAME = "rpc_queue_token";
     private TokenProvider tokenProvider;

@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlType;
     "errorMessage",
     "message"
 })
+
 public class BankServiceException {
 
     protected String errorMessage;

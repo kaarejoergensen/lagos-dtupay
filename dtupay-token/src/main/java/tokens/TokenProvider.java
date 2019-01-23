@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-
+/**
+ * @author Kåre
+ */
 public class TokenProvider {
     private Key key;
 
