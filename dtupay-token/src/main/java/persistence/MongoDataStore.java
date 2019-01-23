@@ -32,16 +32,26 @@ public class MongoDataStore implements Datastore{
     }
 
     public MongoDataStore(String host, int port) {
-        try {
-            MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
-            MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
-            mdb = client.getDatabase("dtupay");
-            this.reset();
-            System.err.println("Connection to mongo host '" + host + "' suceeded");
-        } catch (Exception e) {
-            System.err.println("Connection to mongo host '" + host + "' failed");
-            throw new RuntimeException("No valid mongo host found in list [" + host + "]");
+        boolean connectionSuccessful = false;
+        for (int numberOfTries = 12; numberOfTries > 0; numberOfTries--) {
+            try {
+                MongoClientOptions mongoClientOptions = MongoClientOptions.builder().serverSelectionTimeout(500).build();
+                MongoClient client = new MongoClient(new ServerAddress(host, port), mongoClientOptions);
+                mdb = client.getDatabase("dtupay");
+                this.reset();
+                System.err.println("Connection to mongo host '" + host + "' suceeded");
+                connectionSuccessful = true;
+                break;
+            } catch (Exception e) {
+                System.err.println("Connection to mongo host '" + host + "' failed, sleeping 5 seconds");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
+        if (!connectionSuccessful) throw new RuntimeException("Could not connect to mongo host '" + host + "'");
     }
 
     @Override

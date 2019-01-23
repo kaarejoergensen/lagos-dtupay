@@ -6,8 +6,11 @@ import gherkin.deps.com.google.gson.reflect.TypeToken;
 import models.TokenBarcodePathPair;
 import models.Transaction;
 import org.junit.*;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import javax.ws.rs.client.Client;
@@ -20,6 +23,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -46,48 +50,57 @@ public class CustomerIT {
     @ClassRule
     public static Network network = Network.newNetwork();
 
-    @ClassRule
-    public static GenericContainer rabbitmq = new GenericContainer<>("rabbitmq")
+    private static GenericContainer rabbitmq = new GenericContainer<>("rabbitmq")
             .withEnv("RABBITMQ_DEFAULT_USER", "rabbitmq").withEnv("RABBITMQ_DEFAULT_PASS", "rabbitmq")
             .waitingFor(Wait.forLogMessage(RABBIT_LOG_REGEX, 1))
-            .withNetwork(network).withNetworkAliases("rabbitmq");
+            .withNetwork(network).withNetworkAliases("rabbitmq")
+            .withLogConsumer(new testLogConsumer("rabbitmq"));
 
-    @ClassRule
-    public static GenericContainer mongo = new GenericContainer<>("mongo")
+    private static GenericContainer mongo = new GenericContainer<>("mongo")
             .waitingFor(Wait.forLogMessage(MONGO_LOG_REGEX, 1))
-            .withNetwork(network).withNetworkAliases("mongo");
+            .withNetwork(network).withNetworkAliases("mongo")
+            .withLogConsumer(new testLogConsumer("mongo"));
 
-    @ClassRule
-    public static GenericContainer bank = new GenericContainer<>("lagos/dtupay-bank:local")
+    private static GenericContainer bank = new GenericContainer<>("lagos/dtupay-bank:local")
             .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
-            .withEnv("BROKER_HOST_NAME", "rabbitmq").withNetwork(network);
+            .withEnv("BROKER_HOST_NAME", "rabbitmq").withNetwork(network)
+            .withLogConsumer(new testLogConsumer("bank"));
 
-    @ClassRule
-    public static GenericContainer token = new GenericContainer<>("lagos/dtupay-token:local")
+    private static GenericContainer token = new GenericContainer<>("lagos/dtupay-token:local")
             .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
-            .withEnv("BROKER_HOST_NAME", "rabbitmq").withEnv("MONGO_HOST_NAME", "mongo").withNetwork(network);
+            .withEnv("BROKER_HOST_NAME", "rabbitmq").withEnv("MONGO_HOST_NAME", "mongo").withNetwork(network)
+            .withLogConsumer(new testLogConsumer("token"));
 
-    @ClassRule
-    public static GenericContainer customer = new GenericContainer<>("lagos/dtupay-api-customer:local")
-            .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
-            .withEnv("BROKER_HOST_NAME", "rabbitmq").withExposedPorts(REST_PORT).withNetwork(network)
-            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)));
-
-    @ClassRule
-    public static GenericContainer merchant = new GenericContainer<>("lagos/dtupay-api-merchant:local")
+    private static GenericContainer customer = new GenericContainer<>("lagos/dtupay-api-customer:local")
             .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
             .withEnv("BROKER_HOST_NAME", "rabbitmq").withExposedPorts(REST_PORT).withNetwork(network)
-            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)));
+            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+            .withLogConsumer(new testLogConsumer("customer"));
 
-    @ClassRule
-    public static GenericContainer manager = new GenericContainer<>("lagos/dtupay-api-manager:local")
+    private static GenericContainer merchant = new GenericContainer<>("lagos/dtupay-api-merchant:local")
             .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
             .withEnv("BROKER_HOST_NAME", "rabbitmq").withExposedPorts(REST_PORT).withNetwork(network)
-            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)));
+            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+            .withLogConsumer(new testLogConsumer("merchant"));
+
+    private static GenericContainer manager = new GenericContainer<>("lagos/dtupay-api-manager:local")
+            .withEnv("BROKER_HOST_USERNAME", "rabbitmq").withEnv("BROKER_HOST_PASSWORD", "rabbitmq")
+            .withEnv("BROKER_HOST_NAME", "rabbitmq").withExposedPorts(REST_PORT).withNetwork(network)
+            .waitingFor(Wait.forLogMessage(REST_LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+            .withLogConsumer(new testLogConsumer("manager"));
 
     @BeforeClass
     public static void init() {
-        System.out.println("Running init");
+        System.out.println("Starting all containers");
+        rabbitmq.start();
+        mongo.start();
+        bank.start();
+        token.start();
+        customer.start();
+        merchant.start();
+        manager.start();
+        System.out.println("Finished starting all containers");
+
         customerURL = "http://" + customer.getContainerIpAddress() + ":" + customer.getFirstMappedPort() + "/v1/customer";
         merchantURL = "http://" + merchant.getContainerIpAddress() + ":" + merchant.getFirstMappedPort() + "/v1/merchant";
         managerURL = "http://" + manager.getContainerIpAddress() + ":" + manager.getFirstMappedPort() + "/v1/manager";
@@ -100,14 +113,14 @@ public class CustomerIT {
         System.out.println(webTarget.getUri());
         customerUid = webTarget
                 .queryParam("username", "LagosCustomer")
-                .queryParam("cprNumber", "1243224389")
+                .queryParam("cprNumber", "1945224389")
                 .queryParam("firstName", "LagosCustomer")
                 .queryParam("lastName", "DTUpay")
                 .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
 
         merchantUid = webTarget
                 .queryParam("username", "LagosMerchant")
-                .queryParam("cprNumber", "1234556456")
+                .queryParam("cprNumber", "1933555856")
                 .queryParam("firstName", "LagosMerchant")
                 .queryParam("lastName", "DTUpay")
                 .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
@@ -215,6 +228,28 @@ public class CustomerIT {
                 .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
         result = webTarget.queryParam("accountId", merchantUid)
                 .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+
+        System.out.println("Stopping all containers");
+        rabbitmq.stop();
+        mongo.stop();
+        bank.stop();
+        token.stop();
+        customer.stop();
+        merchant.stop();
+        manager.stop();
+        System.out.println("Finished stopping all containers");
     }
 
+    private static class testLogConsumer implements Consumer<OutputFrame> {
+        private String containerName;
+
+        public testLogConsumer(String containerName) {
+            this.containerName = containerName;
+        }
+
+        @Override
+        public void accept(OutputFrame outputFrame) {
+            System.out.print(this.containerName + ": " + outputFrame.getUtf8String());
+        }
+    }
 }
