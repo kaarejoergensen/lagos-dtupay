@@ -6,6 +6,8 @@ import clients.TokenClient;
 import com.dtupay.dtupayapi.manager.models.UserModel;
 import com.dtupay.dtupayapi.manager.application.ManagerUtils;
 import exceptions.ClientException;
+
+import models.Account;
 import models.AccountInfo;
 
 import javax.ws.rs.*;
@@ -16,9 +18,15 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+
 /*
 Port: 8082
  */
+
+/**
+ @author Fredirk
+ */
+
 @Path("/v1/manager")
 public class ManagerEndpoint {
 
@@ -78,14 +86,13 @@ public class ManagerEndpoint {
     @GET
     @Path("/user/{userId}")
     public Response getUser(@PathParam("userId") String userId) {
-        return Response.ok().entity("Hello").build();
-        /*
+
         try {
-            //UserModel model = utils.getUser(userId);
+            Account model = bankClient.getAccount(userId);
             return Response.ok().entity(model).build();
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Could not find makker").build();
-        }*/
+        }
     }
 
     @GET
@@ -93,5 +100,17 @@ public class ManagerEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response test() {
         return Response.status(Response.Status.OK).entity("Manager test").build();
+    }
+
+    @POST
+    @Path("/user/retireAccount")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retireAccount(@QueryParam("accountId") String accountId) {
+        try {
+            this.bankClient.retireAccount(accountId);
+            return Response.status(Response.Status.OK).build();
+        } catch (ClientException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }

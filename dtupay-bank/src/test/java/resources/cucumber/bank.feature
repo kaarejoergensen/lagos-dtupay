@@ -1,3 +1,4 @@
+# @author Mads
 Feature: Bank cucumber tests.
   This run all test in regards to the bank.
 

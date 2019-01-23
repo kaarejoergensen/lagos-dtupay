@@ -1,48 +1,36 @@
 package com.dtupay.dtupayapi;
 
-import clients.BankClient;
-import clients.TokenClient;
-import exceptions.ClientException;
-import models.User;
-import org.junit.*;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.shaded.javax.ws.rs.client.Client;
-import org.testcontainers.shaded.javax.ws.rs.client.ClientBuilder;
-import org.testcontainers.shaded.javax.ws.rs.client.Entity;
-import org.testcontainers.shaded.javax.ws.rs.client.WebTarget;
-import org.testcontainers.shaded.javax.ws.rs.core.Form;
-import org.testcontainers.shaded.javax.ws.rs.core.MediaType;
-import org.testcontainers.shaded.javax.ws.rs.core.Response;
+import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
+import gherkin.deps.com.google.gson.Gson;
+import gherkin.deps.com.google.gson.reflect.TypeToken;
+import models.Transaction;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.concurrent.TimeoutException;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-@Ignore
+/**
+ @author Thomas
+ */
+
 public class  CustomerTest {
 
-    BankClient bank = new BankClient("localhost", "kode", "her");
-    TokenClient tokenClient = new TokenClient("localhost", "kode", "her");
-
-    private String customerUid;
-    private String merchantUid;
-
-    public CustomerTest() throws IOException, TimeoutException {
-    }
-
-    @ClassRule
-    public static DockerComposeContainer environment =
-            new DockerComposeContainer(new File("../../../../docker-compose.yml"))
-                    .withExposedService("dtupay-api-customer", 8080, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401))
-                    .withExposedService("dtupay-api-merchant", 8081, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401))
-                    .withExposedService("dtupay-api-manager", 8082, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401));
+    private static String customerUid;
+    private static String merchantUid;
 
     @Test
     public void test() {
@@ -55,21 +43,21 @@ public class  CustomerTest {
     @Test
     public void testRequestTokens() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/requestTokens");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/requestTokens");
 
-        Form form = new Form();
-        form.param("name", "Lagos");
-        form.param("uid", customerUid);
-        form.param("count", "0");
+        Response response = webTarget
+                .queryParam("name", "Lagos")
+                .queryParam("uid", customerUid)
+                .queryParam("count", 1)
+                .request(MediaType.APPLICATION_JSON).post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void testBarcode() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/barcode/");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/barcode/");
 
     }
 
@@ -77,75 +65,105 @@ public class  CustomerTest {
     @Test
     public void testGetCustomerTransactions() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/transactions");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/transactions");
 
-        Form form = new Form();
-        form.param("uid", customerUid);
-        form.param("fromDate",  "07-01-2019");
-        form.param("toDate","26-01-2019");
-
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        String response = webTarget
+                .queryParam("userId", customerUid)
+                .queryParam("from", "07-01-2019")
+                .queryParam("to", "26-01-2019")
+                .request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Transaction>>(){}.getType();
+        List<Transaction> transactionList = gson.fromJson(response, listType);
+        assertThat(transactionList, is(notNullValue()));
     }
 
     //Merchant report
     @Test
     public void testGetMerchantTransactions() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8081/v1/merchant/transactions");
+        WebTarget webTarget = client.target("http://localhost:8081").path("v1/merchant/transactions");
 
-        Form form = new Form();
-        form.param("uid", merchantUid);
-        form.param("fromDate",  "07-01-2019");
-        form.param("toDate","26-01-2019");
-
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        String response = webTarget
+                .queryParam("merchId", merchantUid)
+                .queryParam("from", "07-01-2019")
+                .queryParam("to", "26-01-2019")
+                .request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Transaction>>(){}.getType();
+        List<Transaction> transactionList = gson.fromJson(response, listType);
+        assertThat(transactionList, is(notNullValue()));
     }
 
 
     @Test
     public void testTransfer() {
-    Client client = ClientBuilder.newClient();
-    WebTarget webTarget = client.target("http://localhost:8081/v1/merchant/");
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/requestTokens");
 
-    Form form = new Form();
-    form.param("cuid", customerUid);
-    form.param("muid", merchantUid);
-    form.param("price", "100");
-    form.param("description", "some money");
+        String response = webTarget
+                .queryParam("name", "Lagos")
+                .queryParam("uid", customerUid)
+                .queryParam("count", 1)
+                .request(MediaType.APPLICATION_JSON).post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<TokenBarcodePathPair>>(){}.getType();
+        List<TokenBarcodePathPair> tokens = gson.fromJson(response, listType);
+        assertThat(tokens.size(), is(1));
+        System.out.println(tokens.get(0).getToken());
 
-    Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
-    assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        WebTarget webTarget2 = client.target("http://localhost:8081").path("v1/merchant/payment");
+
+        Response response2 = webTarget2
+                .queryParam("token", tokens.get(0).getToken())
+                .queryParam("merchId", merchantUid)
+                .queryParam("price", new BigDecimal(100))
+                .queryParam("description", "some money")
+                .request(MediaType.APPLICATION_JSON).post(Entity.entity("", MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+        assertEquals(Response.Status.OK.getStatusCode(), response2.getStatus());
 
     }
 
 
 
-    @Before
-    public void setup () {
-        try {
-            bank.retireAccount(bank.getAccountByCprNumber("1234123423").getId());
-            bank.retireAccount(bank.getAccountByCprNumber("1234123433").getId());
-            bank.createAccountWithBalance(new User("1234123423", "Lagos", "customer"), BigDecimal.valueOf(1000));
-            bank.createAccountWithBalance(new User("1234123433", "Lagos", "merchant"), BigDecimal.valueOf(1000));
-            this.customerUid = bank.getAccountByCprNumber("1234123423").getId();
-            this.merchantUid = bank.getAccountByCprNumber("1234123433").getId();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+    @BeforeClass
+    public static void setup () {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget;
+
+        webTarget = client.target("http://localhost:8080").path("v1/customer/createUser");
+
+        customerUid = webTarget
+                .queryParam("username", "LagosCustomer")
+                .queryParam("cprNumber", "1243224389")
+                .queryParam("firstName", "LagosCustomer")
+                .queryParam("lastName", "DTUpay")
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+
+        merchantUid = webTarget
+                .queryParam("username", "LagosMerchant")
+                .queryParam("cprNumber", "1234556456")
+                .queryParam("firstName", "LagosMerchant")
+                .queryParam("lastName", "DTUpay")
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+
+        System.out.println(customerUid);
+        System.out.println(merchantUid);
     }
 
-    @After
-    public void tearDown () {
-        try {
-            bank.retireAccount(bank.getAccountByCprNumber("1234123423").getId());
-            bank.retireAccount(bank.getAccountByCprNumber("1234123433").getId());
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+    @AfterClass
+    public static void tearDown () {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target("http://localhost:8082").path("v1/manager/user/retireAccount");
+        String result = webTarget.queryParam("accountId", customerUid)
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+        result = webTarget.queryParam("accountId", merchantUid)
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
     }
 
+    private void retireAccount(String accountId) {
+
+    }
 
 
 }

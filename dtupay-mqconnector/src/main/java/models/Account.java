@@ -46,6 +46,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * @author Kåre
+ */
 public class Account {
     protected BigDecimal balance;
     protected String id;

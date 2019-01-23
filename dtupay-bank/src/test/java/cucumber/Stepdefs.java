@@ -24,7 +24,9 @@ import static org.junit.Assert.*;
 
 //import com.sun.org.apache.xpath.internal.operations.String;
 
-
+/**
+ * @author Asge
+ */
 public class Stepdefs {
 
     private BigDecimal balance;
@@ -32,6 +34,7 @@ public class Stepdefs {
     private User user = new User();
     private HashMap<String,User> users = new HashMap<String,User>();
     private Boolean exceptionCatched = false;
+    private Boolean retiredAccount = false;
 
 
     public Stepdefs(){
@@ -301,16 +304,14 @@ public class Stepdefs {
     @When("the user retires the account")
     public void the_user_retires_the_account() throws BankServiceException_Exception {
         bank.retireAccount(bank.getAccountByCprNumber(user.getCprNumber()).getId());
-        assertFalse(bank.accountExists(user.getCprNumber()));
+        if(bank.accountExists(user.getCprNumber())){
+            retiredAccount = true;
+        }
     }
 
     @Then("the account is Null")
-    public void the_account_is_Null() throws BankServiceException_Exception {
-        boolean accountExists = false;
-        if(bank.accountExists(user.getCprNumber()) ) {
-            accountExists = true;
-        }
-        assertFalse(accountExists);
+    public void the_account_is_Null()  {
+        assertTrue(retiredAccount);
     }
 
     @When("the user retires an account that does not exist")

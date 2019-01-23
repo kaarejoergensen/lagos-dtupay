@@ -13,6 +13,7 @@ import models.User;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -20,6 +21,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
+
+
+/**
+    @author Fredrik
+*/
 
 @Path("/v1/customer")
 public class CustomerEndpoint {
@@ -48,9 +56,11 @@ public class CustomerEndpoint {
 
         try {
             String userId = this.bankClient.createAccountWithBalance(user, new BigDecimal(1000));
-            return Response.status(Response.Status.OK).entity(userId).build();
+            System.out.println("Created user: " + userId);
+            return Response.status(Status.OK).entity(userId).build();
         } catch (ClientException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         }
     }
 
@@ -62,13 +72,17 @@ public class CustomerEndpoint {
             Set<TokenBarcodePathPair> finalTokens = utils.requestTokens(username, userId, number);
             return Response.ok(finalTokens).build();
         }catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught exception").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity("Caught exception").build();
         }catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Caught exception").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(BAD_REQUEST).entity("Caught exception").build();
         } catch (ClientException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         } catch (WriterException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         }
     }
 
@@ -96,9 +110,11 @@ public class CustomerEndpoint {
             List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
             return Response.ok(transactions).build();
         } catch (ParseException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Could not parse date").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(BAD_REQUEST).entity("Could not parse date").build();
         } catch (ClientException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not connect bank client").build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(INTERNAL_SERVER_ERROR).entity("Could not connect bank client").build();
         }
     }
 
@@ -106,6 +122,6 @@ public class CustomerEndpoint {
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     public Response test() {
-        return Response.status(Response.Status.OK).entity("You did it!!!!").build();
+        return Response.status(Status.OK).entity("You did it!!!!").build();
     }
 }

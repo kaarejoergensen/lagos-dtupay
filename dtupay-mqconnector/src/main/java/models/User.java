@@ -40,6 +40,9 @@ import javax.xml.bind.annotation.XmlType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * @author Kåre
+ */
 public class User {
     protected String cprNumber;
     protected String firstName;

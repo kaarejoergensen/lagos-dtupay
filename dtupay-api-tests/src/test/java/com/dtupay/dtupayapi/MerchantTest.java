@@ -2,11 +2,14 @@ package com.dtupay.dtupayapi;
 
 import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.io.File;
-
+/**
+    @author Fredrik
+ */
 @Ignore
 public class MerchantTest {
 

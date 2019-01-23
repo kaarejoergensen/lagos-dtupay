@@ -10,6 +10,9 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         features = "src/test/java/resources/cucumber"
 )
+/**
+ * @author Mads
+ */
 public class RunCucumberTest {
 
 }

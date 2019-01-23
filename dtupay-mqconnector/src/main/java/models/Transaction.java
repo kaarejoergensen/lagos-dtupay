@@ -49,6 +49,9 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * @author Kåre
+ */
 public class Transaction {
     protected BigDecimal amount;
     protected BigDecimal balance;

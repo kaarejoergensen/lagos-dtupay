@@ -16,6 +16,10 @@ import java.io.File;
 
 import static junit.framework.TestCase.assertEquals;
 
+/**
+@auther Fredrik
+ */
+
 @Ignore
 public class ManagerTest {
 

@@ -13,6 +13,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ @author Fredrik
+ */
+
 public class ManagerUtils {
 
     private TokenClient tokenClient;

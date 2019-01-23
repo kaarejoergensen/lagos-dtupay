@@ -10,7 +10,9 @@ import models.User;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Asge
+ */
 public class BankSOAP implements Bank {
     private BankService bankService;
 

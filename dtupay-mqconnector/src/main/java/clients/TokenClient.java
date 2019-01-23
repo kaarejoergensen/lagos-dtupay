@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @author Kåre
+ */
 public class TokenClient extends RPCClient {
     private static final String RPC_QUEUE_NAME = "rpc_queue_token";
 

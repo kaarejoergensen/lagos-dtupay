@@ -7,9 +7,12 @@ import javax.ws.rs.core.Application;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+
+/**
+ @author Jonathan
+ */
 
 @ApplicationPath("/")
 public class RestApplication extends Application {

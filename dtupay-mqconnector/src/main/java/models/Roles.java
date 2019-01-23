@@ -1,5 +1,7 @@
 package models;
-
+/**
+ * @author Kåre
+ */
 public enum Roles {
     User(0), Merchant(1), Admin(2);
 

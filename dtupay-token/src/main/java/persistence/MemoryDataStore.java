@@ -5,7 +5,9 @@ import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.util.*;
-
+/**
+ * @author Kåre
+ */
 public class MemoryDataStore implements Datastore {
     private Map<String, Integer> numberOfUnUsedTokensMap;
 
