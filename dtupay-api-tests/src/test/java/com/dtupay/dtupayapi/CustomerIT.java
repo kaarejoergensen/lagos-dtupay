@@ -12,11 +12,11 @@ import javax.ws.rs.client.WebTarget;
 import java.io.File;
 import java.time.Duration;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class CustomerIT {
-    private static final String COMPOSE_FILE_LOCATION = System.getProperty("user.dir") + "/src/test/resources/compose-test.yml";
+    private static final String COMPOSE_FILE_LOCATION = "/src/test/resources/compose-test.yml";
 
     private static final String CUSTOMER_SERVICE = "api-customer_1";
     private static final String MERCHANT_SERVICE = "api-merchant_1";
@@ -30,7 +30,8 @@ public class CustomerIT {
 
     @ClassRule
     public static DockerComposeContainer environment =
-            new DockerComposeContainer(new File(COMPOSE_FILE_LOCATION))
+            new DockerComposeContainer(new File(Thread.currentThread().getContextClassLoader().
+                    getResource("compose-test.yml").getPath()))
                     .withExposedService(CUSTOMER_SERVICE, CUSTOMER_PORT,
                             //Wait.forHttp("/").forStatusCode(404))
                             Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
