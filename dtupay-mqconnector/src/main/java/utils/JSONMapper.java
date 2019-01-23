@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
+/**
+ * @author Kåre
+ */
 public class JSONMapper {
     public static String JSONToExceptionMessage(String message) throws IOException {
         ObjectMapper mapper = new ObjectMapper();

@@ -1,5 +1,7 @@
 package exceptions;
-
+/**
+ * @author Kåre
+ */
 public class ClientException extends Exception {
     public ClientException() {
     }
