@@ -1,48 +1,24 @@
 package com.dtupay.dtupayapi;
 
-import clients.BankClient;
-import clients.TokenClient;
-import exceptions.ClientException;
-import models.User;
-import org.junit.*;
-import org.testcontainers.containers.DockerComposeContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.shaded.javax.ws.rs.client.Client;
-import org.testcontainers.shaded.javax.ws.rs.client.ClientBuilder;
-import org.testcontainers.shaded.javax.ws.rs.client.Entity;
-import org.testcontainers.shaded.javax.ws.rs.client.WebTarget;
-import org.testcontainers.shaded.javax.ws.rs.core.Form;
-import org.testcontainers.shaded.javax.ws.rs.core.MediaType;
-import org.testcontainers.shaded.javax.ws.rs.core.Response;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.concurrent.TimeoutException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 public class  CustomerTest {
 
-    BankClient bank = new BankClient("localhost", "kode", "her");
-    TokenClient tokenClient = new TokenClient("localhost", "kode", "her");
-
-    private String customerUid;
-    private String merchantUid;
-
-    public CustomerTest() throws IOException, TimeoutException {
-    }
-
-    @ClassRule
-    public static DockerComposeContainer environment =
-            new DockerComposeContainer(new File("../../../../docker-compose.yml"))
-                    .withExposedService("dtupay-api-customer", 8080, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401))
-                    .withExposedService("dtupay-api-merchant", 8081, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401))
-                    .withExposedService("dtupay-api-manager", 8082, Wait.forHttp("/all")
-                            .forStatusCode(200).forStatusCode(401));
+    private static String customerUid;
+    private static String merchantUid;
 
     @Test
     public void test() {
@@ -55,12 +31,12 @@ public class  CustomerTest {
     @Test
     public void testRequestTokens() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/requestTokens");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/requestTokens");
 
         Form form = new Form();
         form.param("name", "Lagos");
         form.param("uid", customerUid);
-        form.param("count", "0");
+        form.param("count", String.valueOf("0"));
 
         Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -69,7 +45,7 @@ public class  CustomerTest {
     @Test
     public void testBarcode() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/barcode/");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/barcode/");
 
     }
 
@@ -77,15 +53,15 @@ public class  CustomerTest {
     @Test
     public void testGetCustomerTransactions() {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:8080/v1/customer/transactions");
+        WebTarget webTarget = client.target("http://localhost:8080").path("v1/customer/transactions");
 
         Form form = new Form();
         form.param("uid", customerUid);
         form.param("fromDate",  "07-01-2019");
         form.param("toDate","26-01-2019");
 
-        Response response = webTarget.request(MediaType.APPLICATION_JSON).post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        String s = webTarget.request("").get(String.class);
+        assertEquals("works", s);
     }
 
     //Merchant report
@@ -122,30 +98,44 @@ public class  CustomerTest {
 
 
 
-    @Before
-    public void setup () {
-        try {
-            bank.retireAccount(bank.getAccountByCprNumber("1234123423").getId());
-            bank.retireAccount(bank.getAccountByCprNumber("1234123433").getId());
-            bank.createAccountWithBalance(new User("1234123423", "Lagos", "customer"), BigDecimal.valueOf(1000));
-            bank.createAccountWithBalance(new User("1234123433", "Lagos", "merchant"), BigDecimal.valueOf(1000));
-            this.customerUid = bank.getAccountByCprNumber("1234123423").getId();
-            this.merchantUid = bank.getAccountByCprNumber("1234123433").getId();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+    @BeforeClass
+    public static void setup () {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget;
+
+        webTarget = client.target("http://localhost:8080").path("v1/customer/createUser");
+
+        customerUid = webTarget
+                .queryParam("username", "LagosCustomer")
+                .queryParam("cprNumber", "1243214321")
+                .queryParam("firstName", "LagosCustomer")
+                .queryParam("lastName", "DTUpay")
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+
+        merchantUid = webTarget
+                .queryParam("username", "LagosMerchant")
+                .queryParam("cprNumber", "1234556677")
+                .queryParam("firstName", "LagosMerchant")
+                .queryParam("lastName", "DTUpay")
+                .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+
+        System.out.println(customerUid);
+        System.out.println(merchantUid);
     }
 
-    @After
-    public void tearDown () {
-        try {
-            bank.retireAccount(bank.getAccountByCprNumber("1234123423").getId());
-            bank.retireAccount(bank.getAccountByCprNumber("1234123433").getId());
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+    @AfterClass
+    public static void tearDown () {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget;
+        webTarget = client.target("http://localhost:8082/v1/manager/user/retireAccount?" +
+                "accountID=" + customerUid);
+        webTarget = client.target("http://localhost:8082/v1/manager/user/retireAccount?" +
+                "accountID=" + merchantUid);
     }
 
+    private void retireAccount(String accountId) {
+
+    }
 
 
 }

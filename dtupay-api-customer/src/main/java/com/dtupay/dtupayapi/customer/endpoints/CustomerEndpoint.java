@@ -47,9 +47,11 @@ public class CustomerEndpoint {
 
         try {
             String userId = this.bankClient.createAccountWithBalance(user, new BigDecimal(1000));
+            System.out.println("Created user: " + userId);
             return Response.status(Response.Status.OK).entity(userId).build();
         } catch (ClientException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            System.err.println("Exception caught: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), e.getMessage()).build();
         }
     }
 
@@ -105,6 +107,6 @@ public class CustomerEndpoint {
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     public Response test() {
-        return Response.status(Response.Status.OK).entity("You did it!").build();
+        return Response.status(Response.Status.OK).entity("You did it!!!!").build();
     }
 }
