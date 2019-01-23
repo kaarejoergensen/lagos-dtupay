@@ -22,7 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 
-@Ignore
+
 public class  CustomerTest {
 
     BankClient bank = new BankClient("localhost", "kode", "her");
