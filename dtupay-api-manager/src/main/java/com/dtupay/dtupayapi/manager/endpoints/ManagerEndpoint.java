@@ -3,11 +3,10 @@ package com.dtupay.dtupayapi.manager.endpoints;
 
 import clients.BankClient;
 import clients.TokenClient;
-import com.dtupay.dtupayapi.manager.Models.UserModel;
+import com.dtupay.dtupayapi.manager.models.UserModel;
 import com.dtupay.dtupayapi.manager.application.ManagerUtils;
 import exceptions.ClientException;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import models.Transaction;
+import models.AccountInfo;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,7 +16,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-
+/*
+Port: 8082
+ */
 @Path("/v1/manager")
 public class ManagerEndpoint {
 
@@ -40,8 +41,8 @@ public class ManagerEndpoint {
     @POST
     @Path("/createAccount")
     public Response createAccount(@QueryParam("cpr") String cpr,
-                                  @QueryParam("firstname") String firstname,
-                                  @QueryParam("lastname") String lastname,
+                                  @QueryParam("firstName") String firstname,
+                                  @QueryParam("lastName") String lastname,
                                   @QueryParam("initialBalance") int initialBalance
                                   ){
         BigDecimal m = new BigDecimal(initialBalance);
@@ -63,8 +64,8 @@ public class ManagerEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers(){
         try {
-            List<UserModel> users = utils.getAllUsers();
-            return Response.ok().entity(users).build();
+            List<AccountInfo> info = bankClient.getAccounts();
+            return Response.ok().entity("Hello").build();
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("").build();
         }
@@ -76,8 +77,7 @@ public class ManagerEndpoint {
 
     @GET
     @Path("/user/{userId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("userId") String userId) {
+    public Response getUser(@PathParam("userId") String userId) {
         return Response.ok().entity("Hello").build();
         /*
         try {
@@ -86,5 +86,12 @@ public class ManagerEndpoint {
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Could not find makker").build();
         }*/
+    }
+
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("Manager test").build();
     }
 }

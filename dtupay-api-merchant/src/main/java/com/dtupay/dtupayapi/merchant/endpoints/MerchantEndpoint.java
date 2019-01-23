@@ -17,7 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
 
-
+/*
+Port: 8081
+ */
 @Path("/v1/merchant")
 public class MerchantEndpoint {
 
@@ -111,6 +113,13 @@ public class MerchantEndpoint {
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+    }
+
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("Merchant test").build();
     }
 
 }

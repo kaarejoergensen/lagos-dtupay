@@ -36,7 +36,7 @@ public class CustomerEndpoint {
         utils = new CustomerUtils(tokenClient, bankClient);
     }
 
-    /*
+
 	@POST
     @Path("/createUser")
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,7 +52,7 @@ public class CustomerEndpoint {
         } catch (ClientException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-    }*/
+    }
 
     @POST
     @Path("/requestTokens")

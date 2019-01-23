@@ -41,5 +41,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.scijava:native-lib-loader:2.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.kohlschutter.junixsocket:junixsocket-common:2.0.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.java.dev.jna:jna-platform:5.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:1.0.0.Final" level="project" />
   </component>
 </module>

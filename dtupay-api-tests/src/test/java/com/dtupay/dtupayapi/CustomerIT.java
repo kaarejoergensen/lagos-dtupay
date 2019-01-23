@@ -1,6 +1,7 @@
 package com.dtupay.dtupayapi;
 
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.OutputFrame;
@@ -14,9 +15,9 @@ import java.time.Duration;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+@Ignore
 public class CustomerIT {
-    private static final String COMPOSE_FILE_LOCATION = System.getProperty("user.dir") + "/src/test/resources/compose-test.yml";
+    private static final String COMPOSE_FILE_LOCATION = "/src/test/resources/compose-test.yml";
 
     private static final String CUSTOMER_SERVICE = "api-customer_1";
     private static final String MERCHANT_SERVICE = "api-merchant_1";
