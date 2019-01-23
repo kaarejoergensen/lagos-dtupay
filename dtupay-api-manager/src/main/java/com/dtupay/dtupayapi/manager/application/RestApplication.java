@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
+/**
+ @author Thomas
+ */
+
 @ApplicationPath("/")
 public class RestApplication extends Application {
 

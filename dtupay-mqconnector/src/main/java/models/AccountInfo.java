@@ -38,6 +38,9 @@ import javax.xml.bind.annotation.XmlType;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * @author Kåre
+ */
 public class AccountInfo {
     protected String accountId;
     protected User user;

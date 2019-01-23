@@ -1,5 +1,7 @@
 package base;
-
+/**
+ * @author Kåre
+ */
 public class Method {
     public enum Token {
         getTokens,

@@ -5,7 +5,9 @@ import gherkin.deps.com.google.gson.*;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.Type;
-
+/**
+ * @author Kåre
+ */
 public class XMLGregorianCalendarConverter {
     public static class Serializer implements JsonSerializer<XMLGregorianCalendar> {
         @Override

@@ -9,7 +9,10 @@ import utils.JSONMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @author Kåre
+ * Inspired by RabitMQ RPC tutorials
+ */
 public abstract class RPCServer {
     public RPCServer() {
     }

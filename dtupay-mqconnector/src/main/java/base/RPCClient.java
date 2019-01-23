@@ -13,7 +13,10 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @author Kåre
+ * Inspired by RabitMQ RPC tutorials
+ */
 public abstract class RPCClient implements AutoCloseable {
     private Connection connection;
     private Channel channel;

@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+/**
+ @author Thomas
+ */
 
 @Path("/v1/manager")
 public class ManagerEndpoint {
