@@ -304,7 +304,7 @@ public class Stepdefs {
     @When("the user retires the account")
     public void the_user_retires_the_account() throws BankServiceException_Exception {
         bank.retireAccount(bank.getAccountByCprNumber(user.getCprNumber()).getId());
-        if(bank.accountExists(user.getCprNumber())){
+        if(!bank.accountExists(user.getCprNumber())){
             retiredAccount = true;
         }
     }
