@@ -24,7 +24,9 @@ import static org.junit.Assert.*;
 
 //import com.sun.org.apache.xpath.internal.operations.String;
 
-
+/**
+ * @author Asge
+ */
 public class Stepdefs {
 
     private BigDecimal balance;
