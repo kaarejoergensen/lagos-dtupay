@@ -1,8 +1,8 @@
 package com.dtupay.dtupayapi;
 
-import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.deps.com.google.gson.reflect.TypeToken;
+import models.TokenBarcodePathPair;
 import models.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

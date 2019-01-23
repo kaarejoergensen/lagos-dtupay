@@ -1,9 +1,9 @@
 package com.dtupay.dtupayapi;
 
 
-import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import gherkin.deps.com.google.gson.Gson;
 import gherkin.deps.com.google.gson.reflect.TypeToken;
+import models.TokenBarcodePathPair;
 import models.Transaction;
 import org.junit.*;
 import org.testcontainers.containers.GenericContainer;
@@ -88,11 +88,6 @@ public class CustomerIT {
     @BeforeClass
     public static void init() {
         System.out.println("Running init");
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         customerURL = "http://" + customer.getContainerIpAddress() + ":" + customer.getFirstMappedPort() + "/v1/customer";
         merchantURL = "http://" + merchant.getContainerIpAddress() + ":" + merchant.getFirstMappedPort() + "/v1/merchant";
         managerURL = "http://" + manager.getContainerIpAddress() + ":" + manager.getFirstMappedPort() + "/v1/manager";
