@@ -63,12 +63,16 @@ public class CustomerEndpoint {
             Set<TokenBarcodePathPair> finalTokens = utils.requestTokens(username, userId, number);
             return Response.ok(finalTokens).build();
         }catch (IOException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught exception").build();
         }catch (IllegalArgumentException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity("Caught exception").build();
         } catch (ClientException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         } catch (WriterException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Caught expection").build();
         }
     }
@@ -97,8 +101,10 @@ public class CustomerEndpoint {
             List<Transaction> transactions = utils.getTransactions(userId,fromDate,toDate);
             return Response.ok(transactions).build();
         } catch (ParseException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity("Could not parse date").build();
         } catch (ClientException e) {
+            System.err.println("Exception caught: " + e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not connect bank client").build();
         }
     }

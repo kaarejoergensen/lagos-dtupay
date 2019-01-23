@@ -4,7 +4,6 @@ package com.dtupay.dtupayapi.merchant.endpoints;
 import clients.BankClient;
 import clients.TokenClient;
 import exceptions.ClientException;
-import models.AccountInfo;
 import models.Transaction;
 
 import javax.ws.rs.*;
@@ -14,7 +13,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 
@@ -71,7 +73,8 @@ public class MerchantEndpoint {
             bankClient.transferMoneyFromTo(userid, merchId, price, description);
             tokenClient.useToken(token);
         } catch (ClientException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            System.err.println("Caught exception: " + e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.OK).build();
     }
