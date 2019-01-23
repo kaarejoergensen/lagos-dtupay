@@ -4,7 +4,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.containers.wait.strategy.AbstractWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import javax.ws.rs.client.Client;
@@ -17,7 +16,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CustomerIT {
-    private static final String COMPOSE_FILE_LOCATION = "src/test/resources/compose-test.yml";
+    private static final String COMPOSE_FILE_LOCATION = System.getProperty("user.dir") + "/src/test/resources/compose-test.yml";
 
     private static final String CUSTOMER_SERVICE = "api-customer_1";
     private static final String MERCHANT_SERVICE = "api-merchant_1";
@@ -76,13 +75,5 @@ public class CustomerIT {
         String result = webTarget.request().get(String.class);
         System.out.println(result);
         assertThat(result, is("You did it!!!!"));
-    }
-
-    private class CustomLogMessageWaitStrategy extends AbstractWaitStrategy {
-
-        @Override
-        protected void waitUntilReady() {
-
-        }
     }
 }
