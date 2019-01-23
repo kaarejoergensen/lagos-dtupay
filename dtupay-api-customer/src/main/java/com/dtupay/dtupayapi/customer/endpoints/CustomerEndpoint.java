@@ -105,6 +105,6 @@ public class CustomerEndpoint {
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     public Response test() {
-        return Response.status(Response.Status.OK).entity("You did it!!!!").build();
+        return Response.status(Response.Status.OK).entity("You did it!").build();
     }
 }
