@@ -3,7 +3,7 @@ package persistence;
 import javax.crypto.SecretKey;
 import java.util.Set;
 /**
- * @author Kåre
+ * @author Fredrik
  */
 public interface Datastore {
     SecretKey getSecretKey();

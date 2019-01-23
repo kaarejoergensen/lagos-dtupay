@@ -18,7 +18,7 @@ import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
 /**
- * @author Kåre
+ * @author Fredrik
  */
 public class MongoDataStore implements Datastore{
     private MongoDatabase mdb;

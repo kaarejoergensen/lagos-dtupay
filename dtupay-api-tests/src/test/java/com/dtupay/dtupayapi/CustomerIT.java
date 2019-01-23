@@ -14,7 +14,9 @@ import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
+/**
+ * @author Kåre
+ */
 public class CustomerIT {
     private static final int REST_PORT = 8080;
 
