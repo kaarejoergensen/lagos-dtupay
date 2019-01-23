@@ -1,6 +1,5 @@
 package com.dtupay.dtupayapi;
 
-import com.sun.security.ntlm.Client;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
