@@ -18,7 +18,9 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-
+/**
+ * @author Kåre
+ */
 public class BankClient extends RPCClient {
     private static final String RPC_QUEUE_NAME = "rpc_queue_bank";
     private Gson gson = new GsonBuilder()
