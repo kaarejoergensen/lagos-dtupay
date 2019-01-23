@@ -87,15 +87,22 @@ public class CustomerIT {
 
     @BeforeClass
     public static void init() {
+        System.out.println("Running init");
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         customerURL = "http://" + customer.getContainerIpAddress() + ":" + customer.getFirstMappedPort() + "/v1/customer";
         merchantURL = "http://" + merchant.getContainerIpAddress() + ":" + merchant.getFirstMappedPort() + "/v1/merchant";
         managerURL = "http://" + manager.getContainerIpAddress() + ":" + manager.getFirstMappedPort() + "/v1/manager";
 
         Client client = ClientBuilder.newClient();
         WebTarget webTarget;
-
+        System.out.println("Creating customer and merchant");
         webTarget = client.target(customerURL).path("createUser");
 
+        System.out.println(webTarget.getUri());
         customerUid = webTarget
                 .queryParam("username", "LagosCustomer")
                 .queryParam("cprNumber", "1243224389")
@@ -109,6 +116,7 @@ public class CustomerIT {
                 .queryParam("firstName", "LagosMerchant")
                 .queryParam("lastName", "DTUpay")
                 .request().post(Entity.entity("", MediaType.APPLICATION_JSON_TYPE), String.class);
+        System.out.println("Finished asfterClass");
     }
 
     @Test

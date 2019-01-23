@@ -2,18 +2,18 @@ package com.dtupay.dtupayapi.customer.application;
 
 import clients.BankClient;
 import clients.TokenClient;
-import com.dtupay.dtupayapi.customer.models.TokenBarcodePathPair;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import exceptions.ClientException;
+import models.TokenBarcodePathPair;
 import models.Transaction;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
