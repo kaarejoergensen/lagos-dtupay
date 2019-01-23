@@ -52,25 +52,21 @@ public class CustomerUtils {
         } catch (ClientException e) {
             throw new IllegalArgumentException("User could not be found.");
         }
-        try {
-            Set<String> s = tokenClient.getTokens(username, userId, tokenCount);
-            Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
+        Set<String> s = tokenClient.getTokens(username, userId, tokenCount);
+        Set<TokenBarcodePathPair> finalTokens = new HashSet<>();
 
-            for (String string : s) {
-                QRCodeWriter qrCodeWriter = new QRCodeWriter();
-                try {
-                    BitMatrix bitMatrix = qrCodeWriter.encode(string, BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
-                    finalTokens.add(new TokenBarcodePathPair(string, saveQRToDisk(bitMatrix)));
-                } catch (WriterException e) {
-                    throw new WriterException();
-                } catch (IOException e) {
-                    throw new IOException();
-                }
+        for (String string : s) {
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            try {
+                BitMatrix bitMatrix = qrCodeWriter.encode(string, BarcodeFormat.QR_CODE, QR_SIZE, QR_SIZE);
+                finalTokens.add(new TokenBarcodePathPair(string, saveQRToDisk(bitMatrix)));
+            } catch (WriterException e) {
+                throw new WriterException();
+            } catch (IOException e) {
+                throw new IOException();
             }
-            return finalTokens;
-        } catch (ClientException e) {
-            throw new ClientException();
         }
+        return finalTokens;
     }
 
     private String saveQRToDisk(BitMatrix qrMatrix) throws IOException {
@@ -123,9 +119,9 @@ public class CustomerUtils {
             }
             return trans;
         } catch (ClientException e) {
-            throw new ClientException();
+            throw e;
         } catch (ParseException e) {
-            throw new ParseException("Could not arse date bruh", 0);
+            throw new ParseException("Could not parse date", 0);
         }
     }
 

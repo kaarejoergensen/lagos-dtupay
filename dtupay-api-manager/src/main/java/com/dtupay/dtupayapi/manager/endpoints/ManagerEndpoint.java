@@ -6,8 +6,6 @@ import clients.TokenClient;
 import com.dtupay.dtupayapi.manager.Models.UserModel;
 import com.dtupay.dtupayapi.manager.application.ManagerUtils;
 import exceptions.ClientException;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import models.Transaction;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -67,6 +65,18 @@ public class ManagerEndpoint {
             return Response.ok().entity(model).build();
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Could not find makker").build();
+        }
+    }
+
+    @POST
+    @Path("/user/retireAccount")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response retireAccount(@QueryParam("accountId") String accountId) {
+        try {
+            this.bankClient.retireAccount(accountId);
+            return Response.status(Response.Status.OK).build();
+        } catch (ClientException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 }
