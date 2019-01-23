@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 /**
- @author Jonathan
+ @author Kåre
  */
 
 @ApplicationPath("/")

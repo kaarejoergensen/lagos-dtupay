@@ -19,9 +19,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-/**
- @author Jonathan
+
+/*
+Port: 8081
  */
+
+/**
+ @author Fredrik
+ */
+
 
 @Path("/v1/merchant")
 public class MerchantEndpoint {
@@ -117,6 +123,13 @@ public class MerchantEndpoint {
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
+    }
+
+    @GET
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response test() {
+        return Response.status(Response.Status.OK).entity("Merchant test").build();
     }
 
 }

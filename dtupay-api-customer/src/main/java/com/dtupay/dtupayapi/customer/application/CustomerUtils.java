@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- @author Jonathan
+ @author Fredrik
  */
 
 public class CustomerUtils {
