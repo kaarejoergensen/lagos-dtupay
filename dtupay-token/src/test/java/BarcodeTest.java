@@ -9,7 +9,9 @@ import java.util.Set;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-
+/**
+ * @author Kåre
+ */
 public class BarcodeTest {
     private String userName = "core";
     private String userId = "1234";

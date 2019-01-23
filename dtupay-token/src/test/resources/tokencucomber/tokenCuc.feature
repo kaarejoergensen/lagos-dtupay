@@ -1,3 +1,4 @@
+# @author Kåre
 Feature: Token and Storage test
   Check if the different features in Token API run as intended
 
