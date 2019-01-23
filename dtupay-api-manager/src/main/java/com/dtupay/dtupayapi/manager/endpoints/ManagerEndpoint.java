@@ -78,11 +78,13 @@ public class ManagerEndpoint {
     @Path("/user/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@PathParam("userId") String userId) {
+        return Response.ok().entity("Hello").build();
+        /*
         try {
-            UserModel model = utils.getUser(userId);
+            //UserModel model = utils.getUser(userId);
             return Response.ok().entity(model).build();
         } catch (ClientException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Could not find makker").build();
-        }
+        }*/
     }
 }

@@ -22,7 +22,7 @@ public class ManagerUtils {
         this.bankClient = bankclient;
     }
 
-    
+
 
 
     public boolean createAccount(String cpr, String firstName, String lastName, BigDecimal initialBalance) throws ClientException {
