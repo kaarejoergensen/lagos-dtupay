@@ -6,6 +6,7 @@ import gherkin.deps.com.google.gson.reflect.TypeToken;
 import models.Transaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.client.Client;
@@ -23,7 +24,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-
+@Ignore
 public class  CustomerTest {
 
     private static String customerUid;
