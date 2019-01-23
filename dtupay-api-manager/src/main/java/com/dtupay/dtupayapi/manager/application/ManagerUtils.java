@@ -22,13 +22,16 @@ public class ManagerUtils {
         this.bankClient = bankclient;
     }
 
+    
 
-    /*
+
+    public boolean createAccount(String cpr, String firstName, String lastName, BigDecimal initialBalance) throws ClientException {
+         /*
         Check if user already have an account
-     */
-    public boolean createAccount(User user, BigDecimal initialBalannce) throws ClientException {
-        bankClient.getAccount(getUser())
-        bankClient.createAccountWithBalance(user,initialBalannce);
+        */
+        if(bankClient.getAccount(cpr) != null) return false;
+            bankClient.createAccountWithBalance(new User(cpr,firstName,lastName),initialBalance);
+            return true;
     }
 
     public UserModel getUser(String userID) throws ClientException {
@@ -45,7 +48,7 @@ public class ManagerUtils {
         try {
             List<UserModel> userModels = new ArrayList<>();
             for(AccountInfo acc : bankClient.getAccounts()){
-                List<Transaction> userTrans = bankClient.getAccountByCprNumber(u.getCprNumber()).getTransactions():
+                List<Transaction> userTrans = bankClient.getAccount(acc.getUser().getCprNumber()).getTransactions();
                 userModels.add(new UserModel(acc.getUser(),userTrans));
             }
             return userModels;

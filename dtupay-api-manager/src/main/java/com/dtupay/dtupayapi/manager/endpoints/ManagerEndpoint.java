@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -32,10 +33,25 @@ public class ManagerEndpoint {
         utils = new ManagerUtils(tokenClient, bankClient);
     }
 
+
+    /*
+
+     */
     @POST
     @Path("/createAccount")
-    public Response createAccount(){
-        return null;
+    public Response createAccount(@QueryParam("cpr") String cpr,
+                                  @QueryParam("firstname") String firstname,
+                                  @QueryParam("lastname") String lastname,
+                                  @QueryParam("initialBalance") int initialBalance
+                                  ){
+        BigDecimal m = new BigDecimal(initialBalance);
+        try {
+            utils.createAccount(cpr,firstname,lastname,m);
+            return Response.ok().entity("").build();
+
+        } catch (ClientException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("").build();
+        }
     }
 
     /*
