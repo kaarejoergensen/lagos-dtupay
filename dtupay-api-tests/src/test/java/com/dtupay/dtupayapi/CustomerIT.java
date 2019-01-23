@@ -30,17 +30,16 @@ public class CustomerIT {
 
     @ClassRule
     public static DockerComposeContainer environment =
-            new DockerComposeContainer(new File(Thread.currentThread().getContextClassLoader().
-                    getResource("compose-test.yml").getPath()))
+            new DockerComposeContainer(new File(COMPOSE_FILE_LOCATION))
                     .withExposedService(CUSTOMER_SERVICE, CUSTOMER_PORT,
                             //Wait.forHttp("/").forStatusCode(404))
-                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)))
                     .withExposedService(MERCHANT_SERVICE, MERCHANT_PORT,
                             //Wait.forHttp("/").forStatusCode(404))
-                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)))
                     .withExposedService(MANAGER_SERVICE, MANAGER_PORT,
                             //Wait.forHttp("/").forStatusCode(404));
-                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(2)))
+                            Wait.forLogMessage(LOG_REGEX, 1).withStartupTimeout(Duration.ofMinutes(4)))
                     .withLogConsumer(CUSTOMER_SERVICE, outputFrame -> {
                         if (((OutputFrame)outputFrame).getUtf8String().contains("Thorntail is Ready")) {
                             System.out.println(CUSTOMER_SERVICE + " is ready!");
